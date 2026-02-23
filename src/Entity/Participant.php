@@ -27,10 +27,10 @@ class Participant
     #[ORM\Column(length: 15)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 50)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $motdepasse = null;
 
     #[ORM\Column]
