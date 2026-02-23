@@ -23,7 +23,7 @@ class Sortie
     private ?\DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
-    private ?int $durée = null;
+    private ?int $duree = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateLimiteInscription = null;
@@ -37,13 +37,13 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Site $site = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'sortiesOrganisees')]
     private ?Participant $organisateur = null;
 
     /**
      * @var Collection<int, Participant>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties')]
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sortiesParticipees')]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -86,14 +86,14 @@ class Sortie
         return $this;
     }
 
-    public function getDurée(): ?int
+    public function getDuree(): ?int
     {
-        return $this->durée;
+        return $this->duree;
     }
 
-    public function setDurée(int $durée): static
+    public function setDuree(int $duree): static
     {
-        $this->durée = $durée;
+        $this->duree = $duree;
 
         return $this;
     }

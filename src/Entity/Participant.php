@@ -43,14 +43,18 @@ class Participant
      * @var Collection<int, Sortie>
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur')]
-    private Collection $sorties;
+    private Collection $sortiesOrganisees;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
+    private Collection $sortiesParticipees;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     private ?Site $site = null;
 
     public function __construct()
     {
-        $this->sorties = new ArrayCollection();
+        $this->sortiesParticipees = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -157,27 +161,50 @@ class Participant
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSorties(): Collection
+    public function getSortiesParticipees(): Collection
     {
-        return $this->sorties;
+        return $this->sortiesParticipees;
     }
 
-    public function addSorty(Sortie $sorty): static
+    public function addSortieParticipee(Sortie $sortie): static
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setOrganisateur($this);
+        if (!$this->sortiesParticipees->contains($sortie)) {
+            $this->sortiesParticipees->add($sortie);
+            $sortie->addParticipant($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): static
+   public function removeSortieParticipee(Sortie $sortie): static
     {
-        if ($this->sorties->removeElement($sorty)) {
-            // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisateur() === $this) {
-                $sorty->setOrganisateur(null);
+        if ($this->sortiesParticipees->removeElement($sortie)) {
+            $sortie->removeParticipant($this); // ✔ relation ManyToMany
+        }
+
+        return $this;
+    }
+
+    public function getSortiesOrganisees(): Collection
+    {
+        return $this->sortiesOrganisees;
+    }
+
+    public function addSortieOrganisee(Sortie $sortie): static
+    {
+        if (!$this->sortiesOrganisees->contains($sortie)) {
+            $this->sortiesOrganisees->add($sortie);
+            $sortie->setOrganisateur($this); // ✔ ici c'est correct
+        }
+
+        return $this;
+    }
+
+    public function removeSortieOrganisee(Sortie $sortie): static
+    {
+        if ($this->sortiesOrganisees->removeElement($sortie)) {
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
             }
         }
 
