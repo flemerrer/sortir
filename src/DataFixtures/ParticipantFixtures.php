@@ -22,8 +22,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant1->setMotDePasse("password123");
         $participant1->setAdministrateur(true);
         $participant1->setActif(true);
-        $participant1->setSite($this->getReference('site1', Site::class));
-        $this->addReference('participant1', $participant1);
+        $participant1->setSite($this->getReference("Rennes", Site::class));
+        $this->addReference("participant1", $participant1);
         $manager->persist($participant1);
 
         $participant2 = new Participant();
@@ -35,8 +35,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant2->setMotDePasse("password123");
         $participant2->setAdministrateur(true);
         $participant2->setActif(true);
-        $participant1->setSite($this->getReference('site2', Site::class));
-        $this->addReference('participant2', $participant2);
+        $participant1->setSite($this->getReference("Nantes", Site::class));
+        $this->addReference("participant2", $participant2);
         $manager->persist($participant2);
 
         $participant3 = new Participant();
@@ -48,8 +48,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant3->setMotDePasse("password123");
         $participant3->setAdministrateur(true);
         $participant3->setActif(true);
-        $participant1->setSite($this->getReference('site3', Site::class));
-        $this->addReference('participant3', $participant3);
+        $participant1->setSite($this->getReference("Vancouver", Site::class));
+        $this->addReference("participant3", $participant3);
         $manager->persist($participant3);
 
         $manager->flush();

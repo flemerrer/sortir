@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -14,47 +15,50 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
 
-        $sortie = new Sortie();
-        $sortie->setNom("Afterwork nems et ti ponche");
-        $sortie->setDateHeureDebut(new \DateTimeImmutable("2026-09-31 18:30:00"));
-        $sortie->setDateLimiteInscription(new \DateTimeImmutable("2026-09-25"));
-        $sortie->setDuree(240);
-        $sortie->setNbInscriptionsMax(15);
-        $sortie->setEtat($this->getReference("Créée", Etat::class));
+        $sortie1 = new Sortie();
+        $sortie1->setNom("Afterwork nems et ti ponche");
+        $sortie1->setDateHeureDebut(new \DateTimeImmutable("2026-09-31 18:30:00"));
+        $sortie1->setDateLimiteInscription(new \DateTimeImmutable("2026-09-25"));
+        $sortie1->setDuree(240);
+        $sortie1->setNbInscriptionsMax(15);
+        $sortie1->setEtat($this->getReference("Créée", Etat::class));
         $participant1 = $this->getReference("participant1", Participant::class);
-        $sortie->setOrganisateur($participant1);
-        $sortie->addParticipant($participant1);
-        $manager->persist($sortie);
+        $sortie1->setOrganisateur($participant1);
+        $sortie1->addParticipant($participant1);
+        $sortie1->setLieu($this->getReference("AVEC", Lieu::class));
+        $manager->persist($sortie1);
 
-        $sortie = new Sortie();
-        $sortie->setNom("Babyfoot et bières sans alcool");
-        $sortie->setDateHeureDebut(new \DateTimeImmutable("2026-09-15 18:30:00"));
-        $sortie->setDateLimiteInscription(new \DateTimeImmutable("2026-09-12"));
-        $sortie->setDuree(240);
-        $sortie->setNbInscriptionsMax(6);
-        $sortie->setEtat($this->getReference("Ouverte", Etat::class));
+        $sortie2 = new Sortie();
+        $sortie2->setNom("Babyfoot et bières sans alcool");
+        $sortie2->setDateHeureDebut(new \DateTimeImmutable("2026-09-15 18:30:00"));
+        $sortie2->setDateLimiteInscription(new \DateTimeImmutable("2026-09-12"));
+        $sortie2->setDuree(240);
+        $sortie2->setNbInscriptionsMax(6);
+        $sortie2->setEtat($this->getReference("Ouverte", Etat::class));
         $participant1 = $this->getReference("participant2", Participant::class);
-        $sortie->setOrganisateur($participant1);
-        $sortie->addParticipant($participant1);
-        $manager->persist($sortie);
+        $sortie2->setOrganisateur($participant1);
+        $sortie2->addParticipant($participant1);
+        $sortie2->setLieu($this->getReference("Le Labo", Lieu::class));
+        $manager->persist($sortie2);
 
-        $sortie = new Sortie();
-        $sortie->setNom("Boîte de jour et bubble tea");
-        $sortie->setDateHeureDebut(new \DateTimeImmutable("2026-09-12 18:30:00"));
-        $sortie->setDateLimiteInscription(new \DateTimeImmutable("2026-09-07"));
-        $sortie->setDuree(240);
-        $sortie->setNbInscriptionsMax(15);
-        $sortie->setEtat($this->getReference("Annulée", Etat::class));
+        $sortie3 = new Sortie();
+        $sortie3->setNom("Boîte de jour et bubble tea");
+        $sortie3->setDateHeureDebut(new \DateTimeImmutable("2026-09-12 18:30:00"));
+        $sortie3->setDateLimiteInscription(new \DateTimeImmutable("2026-09-07"));
+        $sortie3->setDuree(240);
+        $sortie3->setNbInscriptionsMax(15);
+        $sortie3->setEtat($this->getReference("Annulée", Etat::class));
         $participant1 = $this->getReference("participant3", Participant::class);
-        $sortie->setOrganisateur($participant1);
-        $sortie->addParticipant($participant1);
-        $manager->persist($sortie);
+        $sortie3->setOrganisateur($participant1);
+        $sortie3->addParticipant($participant1);
+        $sortie3->setLieu($this->getReference("The Narrow Lounge", Lieu::class));
+        $manager->persist($sortie3);
 
         $manager->flush();
     }
 
     public function getDependencies(): array
     {
-        return [ParticipantFixtures::class, EtatFixtures::class];
+        return [ParticipantFixtures::class, EtatFixtures::class, LieuFixtures::class];
     }
 }
