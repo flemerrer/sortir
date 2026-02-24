@@ -24,7 +24,7 @@ class Participant
     #[ORM\Column(length: 30)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 15)]
+    #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 50)]
@@ -36,7 +36,7 @@ class Participant
     #[ORM\Column]
     private ?bool $administrateur = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
     /**
