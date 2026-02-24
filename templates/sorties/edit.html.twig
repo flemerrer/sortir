@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer une sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Editer une Sortie</h1>
+        {{ form_start(sortieForm) }}
+
+        {{ form_widget(sortieForm) }}
+
+        <div id="location-details" class="hidden"></div>
+        {# TODO: Add custom route and fetch json on select to get
+            selected location infos and display it here #}
+
+        <button class="" type="submit">Enregistrer</button>
+
+        {{ form_end(sortieForm) }}
+    </div>
+{% endblock %}
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>

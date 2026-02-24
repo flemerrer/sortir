@@ -76,6 +76,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getNomPrenom(): ?string
+    {
+        return "{$this->nom} {$this->prenom}";
+    }
+
     public function getNom(): ?string
     {
         return $this->nom;
@@ -84,7 +89,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 

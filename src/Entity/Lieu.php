@@ -124,9 +124,14 @@ class Lieu
         return $this;
     }
 
-    public function getVille(): ?Ville
+    public function getNomVille(): ?string
     {
-        return $this->ville;
+        return "{$this->getNom()} - {$this->getVille()}";
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville ? $this->ville->getNom() : null;
     }
 
     public function setVille(?Ville $ville): static

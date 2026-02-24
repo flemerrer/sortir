@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>{{ sortie.nom }}</h1>
+        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Date : {{ sortie.getDateHeureDebut }}</p>
+        <p>Infos : {{ sortie.infosSortie }}</p>
+        <p>Date limite d'inscription : {{ sortie.getDateLimiteInscription }}</p>
+
+        <a class="" href={{ path('app_sortie_edit', { id: sortie.id }) }}>Modifier</a>
+        <br/>
+        <a class="" href="">S'inscrire</a>
+    </div>
+{% endblock %}
