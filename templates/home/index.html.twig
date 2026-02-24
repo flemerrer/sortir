@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Sortir.com{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            display: inline-block;
+        }
+        .user-info {
+            float: right;
+            color: #666;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .welcome {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="header">
+        <div class="logo">Sortir.com</div>
+        <div class="user-info">
+            Connecté en tant que : <strong>{{ participant.pseudo }}</strong>
+            {% if participant.administrateur %}
+                <span style="color: #007bff;">(Administrateur)</span>
+            {% endif %}
+            | <a href="{{ path('app_logout') }}" style="color: #dc3545;">Déconnexion</a>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="welcome">Bienvenue sur Sortir.com, {{ participant.prenom }} {{ participant.nom }} !</h1>
+        
+        <p>Vous êtes maintenant connecté et pouvez accéder aux fonctionnalités suivantes :</p>
+        
+        <div style="margin-top: 30px;">
+            <a href="#" class="btn">Voir les sorties</a>
+            <a href="#" class="btn">Créer une sortie</a>
+            <a href="#" class="btn">Mon profil</a>
+            {% if participant.administrateur %}
+                <a href="#" class="btn">Gérer les utilisateurs</a>
+                <a href="#" class="btn">Gérer les sites</a>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 4px;">
+            <h3>Informations de votre profil :</h3>
+            <p><strong>Pseudo :</strong> {{ participant.pseudo }}</p>
+            <p><strong>Nom :</strong> {{ participant.nom }}</p>
+            <p><strong>Prénom :</strong> {{ participant.prenom }}</p>
+            <p><strong>Email :</strong> {{ participant.email }}</p>
+            <p><strong>Téléphone :</strong> {{ participant.telephone ?? 'Non renseigné' }}</p>
+            <p><strong>Site de rattachement :</strong> {{ participant.site ? participant.site.nom : 'Non renseigné' }}</p>
+            <p><strong>Statut :</strong> 
+                {% if participant.actif %}
+                    <span style="color: green;">Actif</span>
+                {% else %}
+                    <span style="color: red;">Inactif</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}
