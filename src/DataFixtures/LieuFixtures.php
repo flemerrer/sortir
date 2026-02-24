@@ -22,21 +22,21 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
         $lieu2 = new Lieu();
         $lieu2->setNom("Le Labo");
         $lieu2->setRue("19 rue Léon Blum");
-        $lieu1->setVille($this->getReference("Nantes", Ville::class));
+        $lieu2->setVille($this->getReference("Nantes", Ville::class));
         $this->addReference("Le Labo", $lieu2);
         $manager->persist($lieu2);
 
         $lieu3 = new Lieu();
         $lieu3->setNom("The Narrow Lounge");
         $lieu3->setRue("1899 Main St");
-        $lieu1->setVille($this->getReference("Vancouver", Ville::class));
+        $lieu3->setVille($this->getReference("Vancouver", Ville::class));
         $this->addReference("The Narrow Lounge", $lieu3);
         $manager->persist($lieu3);
 
         $lieu4 = new Lieu();
         $lieu4->setNom("ZBar");
         $lieu4->setRue("3 Impasse du Bourrelier");
-        $lieu1->setVille($this->getReference("St Herblain", Ville::class));
+        $lieu4->setVille($this->getReference("St Herblain", Ville::class));
         $this->addReference("ZBar", $lieu4);
         $manager->persist($lieu4);
         $manager->flush();

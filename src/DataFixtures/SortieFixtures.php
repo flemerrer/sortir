@@ -35,9 +35,9 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie2->setDuree(240);
         $sortie2->setNbInscriptionsMax(6);
         $sortie2->setEtat($this->getReference("Ouverte", Etat::class));
-        $participant1 = $this->getReference("participant2", Participant::class);
-        $sortie2->setOrganisateur($participant1);
-        $sortie2->addParticipant($participant1);
+        $participant2 = $this->getReference("participant2", Participant::class);
+        $sortie2->setOrganisateur($participant2);
+        $sortie2->addParticipant($participant2);
         $sortie2->setLieu($this->getReference("Le Labo", Lieu::class));
         $manager->persist($sortie2);
 
@@ -48,9 +48,9 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie3->setDuree(240);
         $sortie3->setNbInscriptionsMax(15);
         $sortie3->setEtat($this->getReference("Annulée", Etat::class));
-        $participant1 = $this->getReference("participant3", Participant::class);
-        $sortie3->setOrganisateur($participant1);
-        $sortie3->addParticipant($participant1);
+        $participant3 = $this->getReference("participant3", Participant::class);
+        $sortie3->setOrganisateur($participant3);
+        $sortie3->addParticipant($participant3);
         $sortie3->setLieu($this->getReference("The Narrow Lounge", Lieu::class));
         $manager->persist($sortie3);
 
