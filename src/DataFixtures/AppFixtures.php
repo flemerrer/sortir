@@ -14,7 +14,6 @@ class AppFixtures extends Fixture
         // Création d'un site de rattachement
         $site = new Site();
         $site->setNom("SAINT HERBLAIN");
-        $manager->persist($site);
 
         // Création d'un utilisateur simple pour tester la connexion
         $utilisateur = new Participant();
@@ -23,11 +22,9 @@ class AppFixtures extends Fixture
         $utilisateur->setPseudo("backseat");
         $utilisateur->setTelephone("0123456789");
         $utilisateur->setEmail("backseat@email.tld");
-        $utilisateur->setMotdepasse("password123");  // Mot de passe en clair pour les tests
-        $utilisateur->setAdministrateur(false);
+        $utilisateur->setMotDePasse("password123"); // Mot de passe en clair pour les tests
+        $utilisateur->setAdministrateur(true);
         $utilisateur->setActif(true);
-        $utilisateur->setSite($site);
-        $manager->persist($utilisateur);
 
         // Création d'un administrateur pour tester la connexion
         $admin = new Participant();
@@ -36,15 +33,25 @@ class AppFixtures extends Fixture
         $admin->setPseudo("admin");
         $admin->setTelephone("0987654321");
         $admin->setEmail("admin@sortir.com");
-        $admin->setMotdepasse("admin");  // Mot de passe en clair pour les tests
+        $admin->setMotDePasse("admin");  // Mot de passe en clair pour les tests
         $admin->setAdministrateur(true);
         $admin->setActif(true);
         $admin->setSite($site);
+
+        // Création d'une sortie pour tester les fonctionnalités de base
+        $sortie = new Sortie();
+        $sortie->setNom("Afterwork nems et ti ponche");
+        $sortie->setDateHeureDebut(new \DateTimeImmutable("2026-09-31 18:30:00"));
+        $sortie->setDateLimiteInscription(new \DateTimeImmutable("2026-09-01"));
+        $sortie->setDuree(240);
+        $sortie->setNbInscriptionsMax(15);
+        $sortie->setOrganisateur($utilisateur);
+        $utilisateur->addSortieOrganisee($sortie);
+
+        $manager->persist($site);
+        $manager->persist($utilisateur);
         $manager->persist($admin);
-
-        // Note: Les sorties seront créées dans une prochaine étape
-        // quand toutes les entités liées (Etat, Lieu, Ville) seront prêtes
-
+        $manager->persist($sortie);
         $manager->flush();
     }
 }
