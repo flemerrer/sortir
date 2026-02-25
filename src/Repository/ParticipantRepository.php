@@ -32,7 +32,7 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
 
     /**
-     * Used to upgrade (rehash) the user's password automatically over time.
+     * Utilisé pour améliorer (rehash) automatiquement le mot de passe de l'utilisateur au fil du temps.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
