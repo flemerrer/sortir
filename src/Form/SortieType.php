@@ -3,9 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Lieu;
-use App\Entity\Sortie;
+use App\Entity\Ville;
+use App\Models\CreateSortieDTO;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,23 +17,36 @@ class SortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('dateHeureDebut', null, [
-                'widget' => 'single_text',
+            ->add('nom', TextType::class, [])
+            ->add('dateHeureDebut', DateType::class, [
             ])
             ->add('duree', null, [
                 'label'=>"Durée (en minutes)"
             ])
-            ->add('dateLimiteInscription', null, [
-                'widget' => 'single_text',
+            ->add('dateLimiteInscription', DateType::class, [
             ])
             ->add('nbInscriptionsMax')
-            ->add('infosSortie')
-            ->add('lieu', EntityType::class, [
+            ->add('infosSortie', TextType::class, [
+                'required' => false
+            ])
+            ->add('lieuxDisponibles', EntityType::class, [
                 'class' => Lieu::class,
                 'choice_label' => 'getNomVille',
-                'placeholder' => 'Sélectionnez un lieu',
+                'placeholder' => 'Choisir un lieu',
                 'attr' => ['class' => 'location-select']
+            ])
+            ->add('villesDisponibles', EntityType::class, [
+                'class' => Ville::class,
+                'choice_label' => 'getNom',
+                'placeholder' => 'Choisir une ville'
+            ])
+            ->add('nomNouveauLieu', TextType::class, [
+                'required' => false,
+                'label' => 'Nom',
+            ])
+            ->add('rueNouveauLieu', TextType::class, [
+                'required' => false,
+                'label' => 'Rue',
             ])
         ;
     }
@@ -38,7 +54,7 @@ class SortieType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sortie::class,
+            'data_class' => CreateSortieDTO::class,
         ]);
     }
 }

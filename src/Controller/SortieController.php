@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Models\CreateSortieDTO;
+use App\Repository\EtatRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,18 +27,30 @@ final class SortieController extends AbstractController
     }
 
     #[Route("/sorties/add", name: "app_sortie_add", methods: ["GET", "POST"])]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, ParticipantRepository $participantRepository, EtatRepository $etatRepository, EntityManagerInterface $em): Response
     {
-        $sortie = new Sortie();
-        $form = $this->createForm(SortieType::class, $sortie);
+        $createSortieDTO = new CreateSortieDTO();
+        $form = $this->createForm(SortieType::class, $createSortieDTO);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $em->getRepository("App\Entity\Participant")->findOneById(1);
+            $sortieDTO = $form->getData();
+            $user = $participantRepository->findOneById(1);
+
+            $sortie = $sortieDTO->toSortie($em);
+            if ($sortieDTO->nomNouveauLieu && $sortieDTO->rueNouveauLieu) {
+                $lieu = new Lieu();
+                $lieu->setNom($sortieDTO->nomNouveauLieu);
+                $lieu->setRue($sortieDTO->rueNouveauLieu);
+                $lieu->setVille($sortieDTO->villesDisponibles);
+                $sortie->setLieu($lieu);
+            } else {
+                $sortie->setLieu($sortieDTO->lieu);
+            }
             $sortie->setOrganisateur($user);
-            $sortie->setSite($user->getSite());
             $sortie->addParticipant($user);
-            $sortie->setEtat($em->getRepository("App\Entity\Etat")->findOneBy(["libelle" => "Créée"]));
-            $em->persist($sortie);
+            $sortie->setSite($user->getSite());
+            $sortie->setEtat($etatRepository->findOneBy(["libelle" => "Créée"]));
+            $em->persist($sortieDTO);
             $em->flush();
             return $this->redirectToRoute("app_main");
         }
