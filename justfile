@@ -1,5 +1,9 @@
 set shell := ["cmd.exe", "/c"]
 
+# Reload fixtures
+fix-load:
+    symfony console doctrine:fixtures:load
+
 # Drop table, reload schema and fixtures
 reset-db:
     symfony console app:reset-db

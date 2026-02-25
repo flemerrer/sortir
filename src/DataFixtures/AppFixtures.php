@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Participant;
-use App\Entity\Site;
+use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -11,9 +11,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Création d'un site de rattachement
-        $site = new Site();
-        $site->setNom("SAINT HERBLAIN");
 
         // Création d'un utilisateur simple pour tester la connexion
         $utilisateur = new Participant();
@@ -36,7 +33,6 @@ class AppFixtures extends Fixture
         $admin->setMotDePasse("admin");  // Mot de passe en clair pour les tests
         $admin->setAdministrateur(true);
         $admin->setActif(true);
-        $admin->setSite($site);
 
         // Création d'une sortie pour tester les fonctionnalités de base
         $sortie = new Sortie();
@@ -48,7 +44,6 @@ class AppFixtures extends Fixture
         $sortie->setOrganisateur($utilisateur);
         $utilisateur->addSortieOrganisee($sortie);
 
-        $manager->persist($site);
         $manager->persist($utilisateur);
         $manager->persist($admin);
         $manager->persist($sortie);
