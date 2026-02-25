@@ -74,10 +74,9 @@ class Sortie
         return $this;
     }
 
-    public function getDateHeureDebut(): ?string
+    public function getDateHeureDebut(): ?\DateTimeImmutable
     {
-        $result = $this->dateHeureDebut->format('Y-m-d H:i:s');
-        return $result ?: "date inconnue";
+        return $this->dateHeureDebut;
     }
 
     public function setDateHeureDebut(\DateTimeImmutable $dateHeureDebut): static
@@ -99,10 +98,9 @@ class Sortie
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?string
+    public function getDateLimiteInscription(): ?\DateTimeImmutable
     {
-        $result = $this->dateLimiteInscription->format('Y-m-d H:i:s');
-        return $result ?: "date inconnue";
+        return $this->dateLimiteInscription;
     }
 
     public function setDateLimiteInscription(\DateTimeImmutable $dateLimiteInscription): static

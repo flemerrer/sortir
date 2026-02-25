@@ -34,6 +34,12 @@ class VilleFixtures extends Fixture
         $this->addReference("St Herblain", $ville4);
         $manager->persist($ville4);
 
+        $ville5 = new Ville();
+        $ville5->setNom("Pornichet");
+        $ville5->setCodePostal("44380");
+        $this->addReference("Pornichet", $ville5);
+        $manager->persist($ville5);
+
         $manager->flush();
     }
 }
