@@ -43,6 +43,8 @@ class SortieInscriptionService
         }
 
         // Vérifier qu'il reste des places disponibles
+        // Note: Une sortie complète devrait normalement avoir le statut "Clôturée"
+        // Ce check est une sécurité supplémentaire (défense en profondeur)
         $nbInscrits = $sortie->getParticipants()->count();
         if ($nbInscrits >= $sortie->getNbInscriptionsMax()) {
             return [

@@ -19,17 +19,15 @@
     {
         /**
          * @param SortieRepository $sortieRepository
-         * @param SortieInscriptionService $inscriptionService
          * @return Response
          */
         #[\Symfony\Component\Routing\Annotation\Route('/sorties', 'app_sortie_list')]
-        public function list(SortieRepository $sortieRepository, SortieInscriptionService $inscriptionService)
+        public function list(SortieRepository $sortieRepository)
         {
             $sorties = $sortieRepository->findAll();
 
             return $this->render('/sorties/sorties.html.twig', [
                 'sorties' => $sorties,
-                'inscriptionService' => $inscriptionService,
             ]);
         }
 
@@ -193,7 +191,7 @@
 
         /**
          * Inscrire un participant à une sortie
-         * 
+         *
          * @param Sortie $sortie
          * @param SortieInscriptionService $inscriptionService
          * @return Response
@@ -201,12 +199,8 @@
         #[Route("/sorties/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
         public function inscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
+            // L'utilisateur est forcément connecté grâce à la configuration security.yaml
             $participant = $this->getUser();
-            
-            if (!$participant) {
-                $this->addFlash('error', 'Vous devez être connecté pour vous inscrire à une sortie.');
-                return $this->redirectToRoute('app_login');
-            }
 
             $result = $inscriptionService->inscrireParticipant($sortie, $participant);
             
@@ -221,7 +215,7 @@
 
         /**
          * Désinscrire un participant d'une sortie
-         * 
+         *
          * @param Sortie $sortie
          * @param SortieInscriptionService $inscriptionService
          * @return Response
@@ -229,12 +223,8 @@
         #[Route("/sorties/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
         public function desinscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
+            // L'utilisateur est forcément connecté grâce à la configuration security.yaml
             $participant = $this->getUser();
-            
-            if (!$participant) {
-                $this->addFlash('error', 'Vous devez être connecté.');
-                return $this->redirectToRoute('app_login');
-            }
 
             $result = $inscriptionService->desinscrireParticipant($sortie, $participant);
             
