@@ -4,7 +4,7 @@
 
 {% block body %}
 	<div>
-		<h1>{{sortieForm.id ? 'Éditer la' : 'Créer une' }} sortie</h1>
+		<h1>{{sortieForm.vars.data.id ? 'Éditer la' : 'Créer une' }} sortie</h1>
 
 		{{ form_start(sortieForm) }}
 		<div class="group">
@@ -60,7 +60,7 @@
 				{{ form_errors(sortieForm.rueNouveauLieu) }}
 			</div>
 		</div>
-		<button class="" type="submit">{{sortieForm.id ? 'Enregistrer' : 'Créer' }}</button>
+		<button class="" type="submit">{{sortieForm.vars.data.id ? 'Enregistrer' : 'Créer' }}</button>
 
 		{{ form_end(sortieForm) }}
 	</div>
