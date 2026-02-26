@@ -8,6 +8,7 @@
     use App\Models\SortieDTO;
     use App\Repository\EtatRepository;
     use App\Repository\SortieRepository;
+    use App\Service\SortieInscriptionService;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
@@ -186,5 +187,53 @@
             $sortie->setNbInscriptionsMax($sortieDTO->nbInscriptionsMax);
             $sortie->setInfosSortie($sortieDTO->infosSortie);
             return $sortie;
+        }
+
+        /**
+         * Inscrire un participant à une sortie
+         *
+         * @param Sortie $sortie
+         * @param SortieInscriptionService $inscriptionService
+         * @return Response
+         */
+        #[Route("/sorties/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
+        public function inscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
+        {
+            // L'utilisateur est forcément connecté grâce à la configuration security.yaml
+            $participant = $this->getUser();
+
+            $result = $inscriptionService->inscrireParticipant($sortie, $participant);
+            
+            if ($result['success']) {
+                $this->addFlash('success', $result['message']);
+            } else {
+                $this->addFlash('error', $result['message']);
+            }
+
+            return $this->redirectToRoute('app_sortie_list');
+        }
+
+        /**
+         * Désinscrire un participant d'une sortie
+         *
+         * @param Sortie $sortie
+         * @param SortieInscriptionService $inscriptionService
+         * @return Response
+         */
+        #[Route("/sorties/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
+        public function desinscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
+        {
+            // L'utilisateur est forcément connecté grâce à la configuration security.yaml
+            $participant = $this->getUser();
+
+            $result = $inscriptionService->desinscrireParticipant($sortie, $participant);
+            
+            if ($result['success']) {
+                $this->addFlash('success', $result['message']);
+            } else {
+                $this->addFlash('error', $result['message']);
+            }
+
+            return $this->redirectToRoute('app_sortie_list');
         }
     }
