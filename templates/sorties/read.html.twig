@@ -19,6 +19,10 @@
             <li>{{ participant.nomPrenom }}</li>
         {% endfor %}
         </ul>
-        <a class="" href={{ path('app_sortie_edit', { id: sortie.id }) }}>Modifier</a>&nbsp;<a class="" href="">S'inscrire</a>
+        {% if editionAllowed %}
+            <a class="" href={{ path('app_sortie_edit', { id: sortie.id }) }}>Modifier</a>
+        {% endif %}
+        &nbsp;
+        <a class="" href="">S'inscrire</a>
     </div>
 {% endblock %}

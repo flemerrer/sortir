@@ -72,9 +72,9 @@
         #[Route("/sorties/{id}", name: "app_sortie_read", methods: ["GET"])]
         public function read(Sortie $sortie): Response
         {
-            return $this->render("/sorties/read.html.twig", [
-                "sortie" => $sortie,
-            ]);
+            $user = $this->getUser();
+            $editionAllowed = $this->isGranted("ROLE_ADMIN") || $user === $sortie->getOrganisateur();
+            return $this->render("/sorties/read.html.twig", compact("sortie", "editionAllowed"));
         }
 
         /**
