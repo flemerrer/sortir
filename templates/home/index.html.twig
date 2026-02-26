@@ -5,31 +5,9 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #fff;
-            padding: 20px;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 30px;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            display: inline-block;
-        }
-        .user-info {
-            float: right;
-            color: #666;
-        }
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 30px auto;
             padding: 20px;
             background: white;
             border-radius: 8px;
@@ -52,37 +30,20 @@
         }
         .btn:hover {
             background-color: #0056b3;
-        }
-        .btn-logout {
-            background-color: #dc3545;
-        }
-        .btn-logout:hover {
-            background-color: #c82333;
+            color: white;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="header">
-        <div class="logo">Sortir.com</div>
-        <div class="user-info">
-            Connecté en tant que : <strong>{{ participant.pseudo }}</strong>
-            {% if participant.administrateur %}
-                <span style="color: #007bff;">(Administrateur)</span>
-            {% endif %}
-            | <a href="{{ path('app_logout') }}" style="color: #dc3545;">Déconnexion</a>
-        </div>
-        <div style="clear: both;"></div>
-    </div>
-
     <div class="container">
         <h1 class="welcome">Bienvenue sur Sortir.com, {{ participant.prenom }} {{ participant.nom }} !</h1>
         
         <p>Vous êtes maintenant connecté et pouvez accéder aux fonctionnalités suivantes :</p>
         
         <div style="margin-top: 30px;">
-            <a href="#" class="btn">Voir les sorties</a>
-            <a href="#" class="btn">Créer une sortie</a>
+            <a href="{{ path('app_sortie_list') }}" class="btn">Voir les sorties</a>
+            <a href="{{ path('app_sortie_add') }}" class="btn">Créer une sortie</a>
             <a href="#" class="btn">Mon profil</a>
             {% if participant.administrateur %}
                 <a href="#" class="btn">Gérer les utilisateurs</a>

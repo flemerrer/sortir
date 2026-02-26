@@ -17,25 +17,53 @@
                             <th scope="col">Date</th>
                             <th scope="col">Clôture inscriptions</th>
                             <th scope="col">Places restantes</th>
+                            <th scope="col">Inscrit</th>
                             <th scope="col">Organisateur</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for sortie in sorties %}
-                            {%  if sortie.etat.libelle === "Ouverte" %}
+                            {%  if sortie.etat and sortie.etat.libelle == "Ouverte" %}
                             <tr>
                                 <th scope="row"><a href={{ path('app_sortie_read', {id: sortie.id}) }}>{{ sortie.nom }}</a></th>
                                 <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
                                 <td>{{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</td>
                                 <td>{{ sortie.nbInscriptionsMax - sortie.participants|length }}</td>
-                                {# <td>
+                                <td>
                                     {% if app.user in sortie.participants %}
-                                        Oui
+                                        <span class="badge bg-success">Oui</span>
                                     {% else %}
-                                        Non
+                                        <span class="badge bg-secondary">Non</span>
                                     {% endif %}
-                                </td> #}
+                                </td>
                                 <td>{{ sortie.organisateur.pseudo }}</td>
+                                <td>
+                                    {% if app.user in sortie.participants %}
+                                        {# Utilisateur inscrit - afficher bouton désinscription #}
+                                        <form method="post" action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-warning" 
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de cette sortie ?')">
+                                                Se désinscrire
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        {# Utilisateur non inscrit - vérifier s'il peut s'inscrire #}
+                                        {% if sortie.organisateur != app.user %}
+                                            {% if sortie.participants|length < sortie.nbInscriptionsMax %}
+                                                <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        S'inscrire
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="badge bg-danger">Complet</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-info">Organisateur</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                         {% endfor %}
