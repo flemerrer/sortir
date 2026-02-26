@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
+use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -26,6 +27,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie1->setOrganisateur($participant1);
         $sortie1->addParticipant($participant1);
         $sortie1->setLieu($this->getReference("AVEC", Lieu::class));
+        $sortie1->setSite($this->getReference("Rennes", Site::class));
         $manager->persist($sortie1);
 
         $sortie2 = new Sortie();
@@ -39,6 +41,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie2->setOrganisateur($participant2);
         $sortie2->addParticipant($participant2);
         $sortie2->setLieu($this->getReference("Le Labo", Lieu::class));
+        $sortie1->setSite($this->getReference("Nantes", Site::class));
         $manager->persist($sortie2);
 
         $sortie3 = new Sortie();
@@ -52,6 +55,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie3->setOrganisateur($participant3);
         $sortie3->addParticipant($participant3);
         $sortie3->setLieu($this->getReference("The Narrow Lounge", Lieu::class));
+        $sortie1->setSite($this->getReference("Vancouver", Site::class));
         $manager->persist($sortie3);
 
         $sortie4 = new Sortie();
@@ -65,6 +69,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie4->setOrganisateur($participant3);
         $sortie4->addParticipant($participant3);
         $sortie4->setLieu($this->getReference("The Narrow Lounge", Lieu::class));
+        $sortie1->setSite($this->getReference("Vancouver", Site::class));
         $manager->persist($sortie4);
 
         $sortie5 = new Sortie();
@@ -78,6 +83,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie5->setOrganisateur($participant3);
         $sortie5->addParticipant($participant3);
         $sortie5->setLieu($this->getReference("Plage des libraires", Lieu::class));
+        $sortie1->setSite($this->getReference("Nantes", Site::class));
         $manager->persist($sortie5);
 
         $manager->flush();

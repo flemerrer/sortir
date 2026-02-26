@@ -8,9 +8,12 @@
         <h5>Détails</h5>
         <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
         <p>Durée prévue : {{ sortie.duree }}</p>
-        <p>Organisateur : {{ sortie.organisateur.getNomPrenom }}</p>
+        <p>Organisé par : {{ sortie.organisateur.getNomPrenom }}</p>
+        <p>Campus de : {{ sortie.site.nom }}</p>
         <p>Lieu : {{ sortie.lieu.nom }}</p>
-        <p>Infos : {{ sortie.infosSortie }}</p>
+        <p>Coordonnées : {{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}</p>
+        <p>Description : </p>
+        <p>{{ sortie.infosSortie }}</p>
         <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
         <p>Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>
         <h5>Participants</h5>

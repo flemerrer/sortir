@@ -14,23 +14,37 @@
     </head>
     <body class="d-flex flex-column min-vh-100">
         {{include ('element/header.html.twig')}}
-<div class="flash-container">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash alert-{{ label }}">
-                    {{ message }}
-                </div>
+    <div id="flash-container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-</div>
+    </div>
         {% block body %}{% endblock %}
         
         {{include ('element/footer.html.twig')}}
     </body>
 </html>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const successMessage = document.getElementById("flash-container").querySelector(".flash");
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.transition = "all 0.5s ease";
+                successMessage.style.transform = "translateY(-200%)";
+                successMessage.style.opacity = "0";
+            }, 3000);
+        }
+    });
+</script>
+
 <style>
-    .flash-container {
+    #flash-container {
+        height: 45px;
         position: relative;
         margin: 10px 10px;
     }

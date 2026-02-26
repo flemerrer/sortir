@@ -4,9 +4,16 @@
 
 {% block body %}
 	<div>
-		<h1>{{sortieForm.id ? 'Éditer la' : 'Créer une' }} sortie</h1>
+		<h1>{{sortieForm.vars.data.id ? "Éditer la" : "Créer une" }} sortie</h1>
 
 		{{ form_start(sortieForm) }}
+		{% if sortieForm.vars.data.id and is_granted("ROLE_ADMIN") %}
+			<div class="group">
+				{{ form_label(sortieForm.site) }}
+				{{ form_widget(sortieForm.site) }}
+				{{ form_errors(sortieForm.site) }}
+			</div>
+		{% endif %}
 		<div class="group">
 			{{ form_label(sortieForm.nom) }}
 			{{ form_widget(sortieForm.nom) }}
@@ -59,8 +66,18 @@
 				{{ form_widget(sortieForm.rueNouveauLieu) }}
 				{{ form_errors(sortieForm.rueNouveauLieu) }}
 			</div>
+			<div class="group">
+				{{ form_label(sortieForm.nouveauLieuLatitude) }}
+				{{ form_widget(sortieForm.nouveauLieuLatitude) }}
+				{{ form_errors(sortieForm.nouveauLieuLatitude) }}
+			</div>
+			<div class="group">
+				{{ form_label(sortieForm.nouveauLieuLongitude) }}
+				{{ form_widget(sortieForm.nouveauLieuLongitude) }}
+				{{ form_errors(sortieForm.nouveauLieuLongitude) }}
+			</div>
 		</div>
-		<button class="" type="submit">{{sortieForm.id ? 'Enregistrer' : 'Créer' }}</button>
+		<button class="" type="submit">{{sortieForm.vars.data.id ? 'Enregistrer' : 'Créer' }}</button>
 
 		{{ form_end(sortieForm) }}
 	</div>

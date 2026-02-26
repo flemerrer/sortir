@@ -56,7 +56,7 @@
                     $em->persist($sortie);
                     $em->flush();
                     $this->addFlash("success", "Sortie créée avec succès.");
-                    return $this->redirectToRoute("app_sortie_list");
+                    return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
                 } catch (\Exception $e) {
                     $this->addFlash("error", "Une erreur est survenue lors de la création de la sortie.");
                 }
@@ -149,6 +149,8 @@
                 $lieu = new Lieu();
                 $lieu->setNom($sortieDTO->nomNouveauLieu);
                 $lieu->setRue($sortieDTO->rueNouveauLieu);
+                $lieu->setLatitude($sortieDTO->nouveauLieuLatitude);
+                $lieu->setLongitude($sortieDTO->nouveauLieuLongitude);
                 $lieu->setVille($sortieDTO->villesDisponibles);
                 $em->persist($lieu);
                 $sortie->setLieu($lieu);
@@ -171,6 +173,7 @@
             $sortie->setNbInscriptionsMax($dto->nbInscriptionsMax);
             $sortie->setInfosSortie($dto->infosSortie);
             $sortie->setLieu($dto->lieu);
+            $sortie->setSite($dto->site);
         }
 
         /**
