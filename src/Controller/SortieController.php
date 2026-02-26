@@ -15,6 +15,9 @@
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
 
+    /**
+     * Controller managing Sortie entitities
+     */
     final class SortieController extends AbstractController
     {
         /**
@@ -73,9 +76,8 @@
         #[Route("/sorties/{id}", name: "app_sortie_read", methods: ["GET"])]
         public function read(Sortie $sortie): Response
         {
-            $user = $this->getUser();
-            $editionAllowed = $this->isGranted("ROLE_ADMIN") || $user === $sortie->getOrganisateur();
-            return $this->render("/sorties/read.html.twig", compact("sortie", "editionAllowed"));
+            $userCanEdit = $this->canUserEditSortie($sortie, $this->getUser());
+            return $this->render("/sorties/read.html.twig", compact("sortie", "userCanEdit"));
         }
 
         /**
@@ -87,7 +89,8 @@
         #[Route("/sorties/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
         public function edit(Request $request, Sortie $sortie, EntityManagerInterface $em): Response
         {
-            if ($this->isGranted("ROLE_ADMIN") || $this->getUser() === $sortie->getOrganisateur()) {
+            $userCanEdit = $this->canUserEditSortie($sortie, $this->getUser());
+            if ($userCanEdit) {
                 $editSortieDTO = new SortieDTO();
                 $editSortieDTO->loadSortie($sortie);
                 $form = $this->createForm(SortieType::class, $editSortieDTO);
@@ -119,10 +122,61 @@
          * @param EntityManagerInterface $em
          * @return Response
          */
+        #[Route("/sorties/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
+        public function publish(Sortie $sortie, EntityManagerInterface $em): Response
+        {
+            $userCanEdit = $this->canUserEditSortie($sortie, $this->getUser());
+            if ($userCanEdit &&  $sortie->getEtat()->getLibelle() === "Créée") {
+                try {
+                    $newEtat = $em->getRepository("App\Entity\Etat")->findBy(["libelle" => "Ouverte"]);
+                    $sortie->setEtat($newEtat);
+                    $em->flush();
+                    $this->addFlash("success", "Sortie publiée avec succès.");
+                } catch (\Exception $e) {
+                    $this->addFlash("error", "Une erreur est survenue lors de la publication de la sortie.");
+                }
+            } else {
+                $this->addFlash("error", "Vous n'avez pas la permission de publier cette sortie.");
+            }
+            return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
+        }
+
+        /**
+         * @param Sortie $sortie
+         * @param EntityManagerInterface $em
+         * @return Response
+         */
+        #[Route("/sorties/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
+        public function cancel(Sortie $sortie, EntityManagerInterface $em): Response
+        {
+            $userCanEdit = $this->canUserEditSortie($sortie, $this->getUser());
+            $currentEtat = $sortie->getEtat()->getLibelle();
+            $statusOk = in_array($currentEtat, ["Créée", "Ouverte", "Clôturée"]);
+            if ($userCanEdit && $statusOk) {
+                try {
+                    $newEtat = $em->getRepository("App\Entity\Etat")->findOneBy(["libelle" => "Annulée"]);
+                    $sortie->setEtat($newEtat);
+                    $em->flush();
+                    $this->addFlash("success", "Sortie annulée avec succès.");
+                } catch (\Exception $e) {
+                    $this->addFlash("error", "Une erreur est survenue lors de l'annulation de la sortie.");
+                }
+            } else {
+                $this->addFlash("error", "Vous n'avez pas la permission d'annuler cette sortie.");
+            }
+            return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
+        }
+
+        /**
+         * @param Sortie $sortie
+         * @param EntityManagerInterface $em
+         * @return Response
+         */
         #[Route("/sorties/{id}/delete", name: "app_sortie_delete", methods: ["POST"])]
         public function delete(Sortie $sortie, EntityManagerInterface $em): Response
         {
-            if ($this->isGranted("ROLE_ADMIN") || $this->getUser() === $sortie->getOrganisateur()) {
+            $userCanEdit = $this->canUserEditSortie($sortie, $this->getUser());
+            if ($userCanEdit) {
                 try {
                     $em->remove($sortie);
                     $em->flush();
@@ -193,6 +247,17 @@
         }
 
         /**
+         * @param Sortie $sortie
+         * @param \Symfony\Component\Security\Core\User\UserInterface|null $user
+         * @return bool
+         */
+        public function canUserEditSortie(Sortie $sortie, ?\Symfony\Component\Security\Core\User\UserInterface $user): bool
+        {
+            $editionAllowed = $this->isGranted("ROLE_ADMIN") || $user === $sortie->getOrganisateur();
+            return $editionAllowed;
+        }
+
+        /**
          * Inscrire un participant à une sortie
          *
          * @param Sortie $sortie
@@ -206,7 +271,7 @@
             $participant = $this->getUser();
 
             $result = $inscriptionService->inscrireParticipant($sortie, $participant);
-            
+
             if ($result['success']) {
                 $this->addFlash('success', $result['message']);
             } else {
@@ -230,7 +295,7 @@
             $participant = $this->getUser();
 
             $result = $inscriptionService->desinscrireParticipant($sortie, $participant);
-            
+
             if ($result['success']) {
                 $this->addFlash('success', $result['message']);
             } else {
