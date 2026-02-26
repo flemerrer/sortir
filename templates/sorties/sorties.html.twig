@@ -9,6 +9,73 @@
 <div class="container-fluid">
     <div class="container">
         <div class="row">
+            <div class="col-md-12 mt-5 mb-3">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <form action="" method="get">
+                        <div class="col-md-10">
+                            <form action="" method="get">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-md-6">
+                                    <!-- filtre site -->
+                                        <select name="site" class="form-select mb-2">
+                                            <option value="">-- Tous les sites --</option>
+                                            {% for site in sites %}
+                                                <option value="{{ site.id }}"
+                                                    {% if app.request.get('site') == site.id %}selected{% endif %}>
+                                                    {{ site.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    <!--filtre dates -->
+                                        <div class="row mb-1">
+                                            <div class="col-md-2"><p>Entre : </p></div>
+                                            <div class="col-md-4">
+                                                <input type="date" name="dateMin" class="form-control" value="{{ app.request.get('dateMin') }}">
+                                            </div>
+                                            <div class="col-md-2"><p>et :</p></div>
+                                            <div class="col-md-4">
+                                                <input type="date" name="dateMax" class="form-control" value="{{ app.request.get('dateMax') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="text" name="recherche" class="form-control" placeholder="Le nom de la sortie contient..." id="recherche" value="{{ app.request.get('recherche') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Filtre sortie/participant -->
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="organisateur" value="1" id="organisateur" {% if app.request.get('organisateur') %}checked{% endif %}>
+                                            <label for="organisateur" class="form-check-label">Sorties dont je suis l'organisateur/trice</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="inscrit" value="1" id="inscrit" {% if app.request.get('inscrit') %}checked{% endif %}>
+                                            <label for="organisateur" class="form-check-label">Sorties auxquelles je suis inscrit(e)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="nonInscrit" value="1" id="nonInscrit" {% if app.request.get('nonInscrit') %}checked{% endif %}>
+                                            <label for="organisateur" class="form-check-label">Sorties auxquelles je ne suis pas inscrit(e)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="sortiesPassees" value="1" id="sortiesPassees" {% if app.request.get('sortiesPassees') %}checked{% endif %}>
+                                            <label for="organisateur" class="form-check-label">Sorties passées</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-secondary w-100">Rechercher</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-1">
+                        </div>
+                    </form>
+                    <div class="col-md-1"></div>
+                </div>
+            </div>
             <div class="col-md-12 mt-5 mb-5">
                 <table class="table">
                     <thead>
@@ -17,6 +84,7 @@
                             <th scope="col">Date</th>
                             <th scope="col">Clôture inscriptions</th>
                             <th scope="col">Places restantes</th>
+                            <th scope="col">Etat</th>
                             <th scope="col">Inscrit</th>
                             <th scope="col">Organisateur</th>
                             <th scope="col">Actions</th>
@@ -24,12 +92,16 @@
                     </thead>
                     <tbody>
                         {% for sortie in sorties %}
-                            {%  if sortie.etat and sortie.etat.libelle == "Ouverte" %}
                             <tr>
                                 <th scope="row"><a href="{{ path('app_sortie_read', {id: sortie.id}) }}">{{ sortie.nom }}</a></th>
                                 <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
                                 <td>{{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</td>
                                 <td>{{ sortie.nbInscriptionsMax - sortie.participants|length }}</td>
+                                {% if sortie.etat %}
+                                    <td>{{ sortie.etat.libelle }}</td>
+                                {% else %}
+                                    <td> - </td>
+                                {% endif %}
                                 <td>
                                     {% if app.user in sortie.participants %}
                                         <span class="badge bg-success">Oui</span>
@@ -65,7 +137,7 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            {% endif %}
+                          
                         {% endfor %}
                     </tbody>
                     </table>
