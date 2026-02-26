@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -204,5 +205,10 @@ class Sortie
         $this->etat = $etat;
 
         return $this;
+    }
+
+    public function isOrganisateur(UserInterface $user)
+    {
+        return $this->organisateur->getId() === $user->getId();
     }
 }

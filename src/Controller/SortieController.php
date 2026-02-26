@@ -14,9 +14,10 @@
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\Routing\Attribute\Route;
+    use Symfony\Component\Security\Core\User\UserInterface;
 
     /**
-     * Controller managing Sortie entitities
+     * Controller responsable des routes liées aux Sorties
      */
     final class SortieController extends AbstractController
     {
@@ -248,12 +249,12 @@
 
         /**
          * @param Sortie $sortie
-         * @param \Symfony\Component\Security\Core\User\UserInterface|null $user
+         * @param UserInterface $user
          * @return bool
          */
-        public function canUserEditSortie(Sortie $sortie, ?\Symfony\Component\Security\Core\User\UserInterface $user): bool
+        public function canUserEditSortie(Sortie $sortie, UserInterface $user): bool
         {
-            $editionAllowed = $this->isGranted("ROLE_ADMIN") || $user === $sortie->getOrganisateur();
+            $editionAllowed = $this->isGranted("ROLE_ADMIN") || $user === $sortie->isOrganisateur($user);
             return $editionAllowed;
         }
 
