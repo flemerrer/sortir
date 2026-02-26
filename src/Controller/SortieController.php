@@ -172,6 +172,7 @@
             $sortie->setNbInscriptionsMax($dto->nbInscriptionsMax);
             $sortie->setInfosSortie($dto->infosSortie);
             $sortie->setLieu($dto->lieu);
+            $sortie->setSite($dto->site);
         }
 
         /**

@@ -3,6 +3,7 @@
     namespace App\Form;
 
     use App\Entity\Lieu;
+    use App\Entity\Site;
     use App\Entity\Ville;
     use App\Models\SortieDTO;
     use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -50,6 +51,14 @@
                 ->add('infosSortie', TextareaType::class, [
                     'required' => false,
                 ])
+                ->add('site', EntityType::class, [
+                    'label' => "Site organisateur",
+                    'class' => Site::class,
+                    'required' => false,
+                    'choice_value' => 'id',
+                    'choice_label' => 'getNom',
+                    'placeholder' => false
+                ])
                 ->add('lieuxDisponibles', EntityType::class, [
                     'label' => "Choisir un lieu (ou en crér un)*",
                     'class' => Lieu::class,
@@ -96,7 +105,7 @@
                                       !empty($data->nouveauLieuLongitude);
 
                 if (!$hasLieu && !$hasAllNewLieuFields) {
-                    $form->addError(new \Symfony\Component\Form\FormError(
+                    $form->get('lieuxDisponibles')->addError(new \Symfony\Component\Form\FormError(
                         "Choisissez un lieu existant ou remplissez tous les champs pour créer un nouveau lieu."
                     ));
                 }

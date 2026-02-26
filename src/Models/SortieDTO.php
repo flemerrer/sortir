@@ -3,6 +3,7 @@
     namespace App\Models;
 
     use App\Entity\Lieu;
+    use App\Entity\Site;
     use App\Entity\Sortie;
     use App\Entity\Ville;
     use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,7 @@
         #[Assert\NotBlank]
         #[Assert\Length(min: 2, max: 90)]
         public ?string $nom = null;
+        public ?Site $site = null;
         #[Assert\GreaterThan(14)]
         public ?int $duree = null;
         public ?\DateTimeImmutable $dateHeureDebut = null;
@@ -40,6 +42,7 @@
             $this->id = $sortie->getId();
             $this->nom = $sortie->getNom();
             $this->duree = $sortie->getDuree();
+            $this->site = $sortie->getSite();
             $this->dateHeureDebut = $sortie->getDateHeureDebut();
             $this->dateLimiteInscription = $sortie->getDateLimiteInscription();
             $this->nbInscriptionsMax = $sortie->getNbInscriptionsMax();
