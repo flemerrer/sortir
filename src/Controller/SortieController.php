@@ -134,7 +134,7 @@
             $userCanEdit = $this->isGranted("ROLE_ADMIN") || $sortie->isOrganisateur($this->getUser());
             if ($userCanEdit &&  $sortie->getEtat()->getLibelle() === "Créée") {
                 try {
-                    $newEtat = $em->getRepository("App\Entity\Etat")->findBy(["libelle" => "Ouverte"]);
+                    $newEtat = $em->getRepository("App\Entity\Etat")->findOneBy(["libelle" => "Ouverte"]);
                     $sortie->setEtat($newEtat);
                     $em->flush();
                     $this->addFlash("success", "Sortie publiée avec succès.");
@@ -155,7 +155,7 @@
         #[Route("/sorties/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
         public function cancel(Sortie $sortie, EntityManagerInterface $em): Response
         {
-            $userCanEdit = $this->$this->isGranted("ROLE_ADMIN") || $sortie->isOrganisateur($this->getUser());
+            $userCanEdit = $this->isGranted("ROLE_ADMIN") || $sortie->isOrganisateur($this->getUser());
             $currentEtat = $sortie->getEtat()->getLibelle();
             $statusOk = in_array($currentEtat, ["Créée", "Ouverte", "Clôturée"]);
             if ($userCanEdit && $statusOk) {
