@@ -9,7 +9,7 @@
         <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
         <p>Durée prévue : {{ sortie.duree }}</p>
         <p>Organisateur : {{ sortie.organisateur.getNomPrenom }}</p>
-        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Lieu : {{ sortie.lieu.nom }} (Lat : {{ sortie.lieu.latitude }} / Long: {{ sortie.lieu.longitude }}</p>
         <p>Infos : {{ sortie.infosSortie }}</p>
         <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
         <p>Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>

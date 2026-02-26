@@ -148,6 +148,8 @@
                 $lieu = new Lieu();
                 $lieu->setNom($sortieDTO->nomNouveauLieu);
                 $lieu->setRue($sortieDTO->rueNouveauLieu);
+                $lieu->setLatitude($sortieDTO->nouveauLieuLatitude);
+                $lieu->setLongitude($sortieDTO->nouveauLieuLongitude);
                 $lieu->setVille($sortieDTO->villesDisponibles);
                 $em->persist($lieu);
                 $sortie->setLieu($lieu);

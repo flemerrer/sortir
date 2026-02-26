@@ -59,6 +59,16 @@
 				{{ form_widget(sortieForm.rueNouveauLieu) }}
 				{{ form_errors(sortieForm.rueNouveauLieu) }}
 			</div>
+			<div class="group">
+				{{ form_label(sortieForm.nouveauLieuLatitude) }}
+				{{ form_widget(sortieForm.nouveauLieuLatitude) }}
+				{{ form_errors(sortieForm.nouveauLieuLatitude) }}
+			</div>
+			<div class="group">
+				{{ form_label(sortieForm.nouveauLieuLongitude) }}
+				{{ form_widget(sortieForm.nouveauLieuLongitude) }}
+				{{ form_errors(sortieForm.nouveauLieuLongitude) }}
+			</div>
 		</div>
 		<button class="" type="submit">{{sortieForm.vars.data.id ? 'Enregistrer' : 'Créer' }}</button>
 

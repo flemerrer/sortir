@@ -28,6 +28,8 @@
         public ?string $nomNouveauLieu = null;
         #[Assert\Length(min: 2, max: 90)]
         public ?string $rueNouveauLieu = null;
+        public ?string $nouveauLieuLatitude = null;
+        public ?string $nouveauLieuLongitude = null;
 
 // TODO: ajouter la possibilité de créer une nouvelle ville en même temps que la sortie
 //            public ?string $nomNouvelleVille,
