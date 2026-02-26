@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>{{ sortie.getNom }}</h1>
+        <h5>Détails</h5>
+        <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+        <p>Durée prévue : {{ sortie.duree }}</p>
+        <p>Organisateur : {{ sortie.organisateur.getNomPrenom }}</p>
+        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Infos : {{ sortie.infosSortie }}</p>
+        <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
+        <p>Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>
+        <h5>Participants</h5>
+        <ul>
+        {% for participant in sortie.participants %}
+            <li>{{ participant.nomPrenom }}</li>
+        {% endfor %}
+        </ul>
+        {% if editionAllowed %}
+            <a class="" href={{ path('app_sortie_edit', { id: sortie.id }) }}>Modifier</a>
+        {% endif %}
+        &nbsp;
+        <a class="" href="">S'inscrire</a>
+    </div>
+{% endblock %}

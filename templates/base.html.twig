@@ -14,9 +14,42 @@
     </head>
     <body class="d-flex flex-column min-vh-100">
         {{include ('element/header.html.twig')}}
-        
+<div class="flash-container">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+</div>
         {% block body %}{% endblock %}
         
         {{include ('element/footer.html.twig')}}
     </body>
 </html>
+
+<style>
+    .flash-container {
+        position: relative;
+        margin: 10px 10px;
+    }
+
+    .flash {
+        position: relative;
+        background-color: rgba(25, 25, 25, 0.85);
+        padding: 10px;
+        text-align: center;
+        z-index: 1000;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        color: springgreen;
+    }
+
+    .alert-error {
+        color: orangered;
+    }
+</style>
