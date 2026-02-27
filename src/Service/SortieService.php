@@ -7,11 +7,15 @@
     use App\Exception\SortieCancelException;
     use App\Exception\SortieCreateException;
     use App\Exception\SortieDeleteException;
+    use App\Exception\SortieFetchFilteredException;
     use App\Exception\SortiePublishException;
     use App\Exception\SortieUpdateException;
     use App\Models\SortieDTO;
+    use App\Models\SortieSearchFilters;
     use App\Repository\EtatRepository;
+    use App\Repository\SortieRepository;
     use Doctrine\ORM\EntityManagerInterface;
+    use Symfony\Component\HttpFoundation\InputBag;
 
     /**
      * Service responsable de la gestion des Sorties
@@ -20,8 +24,9 @@
     {
         public function __construct(
             private readonly EntityManagerInterface $em,
-            private readonly lieuService            $etatService,
-            private readonly EtatRepository         $etatRepository
+            private readonly LieuService            $lieuService,
+            private readonly EtatRepository         $etatRepository,
+            private readonly SortieRepository       $sortieRepository
         )
         {
         }
@@ -77,7 +82,7 @@
         public function addOrCreateLieu(SortieDTO $sortieDTO, Sortie $sortie): void
         {
             if ($sortieDTO->nomNouveauLieu && $sortieDTO->rueNouveauLieu) {
-                $lieu = $this->etatService->createLieuFromDTO($sortieDTO);
+                $lieu = $this->lieuService->createLieuFromDTO($sortieDTO);
                 $sortie->setLieu($lieu);
             } else {
                 $sortie->setLieu($sortieDTO->lieuxDisponibles);
@@ -128,6 +133,33 @@
                 $this->em->flush();
             } catch (\Exception $e) {
                 throw new SortieDeleteException($e->getMessage());
+            }
+        }
+
+        public function getSortieWithFilters(InputBag $query, Participant $user): array
+        {
+            try {
+                $siteId = $query->getInt('site');
+                $dateMin = $query->get('dateMin');
+                $dateMax = $query->get('dateMax');
+                $organisateur = $query->get('organisateur');
+                $inscrit = $query->get('inscrit');
+                $nonInscrit = $query->get('nonInscrit');
+                $sortiesPassees = $query->get('sortiesPassees');
+                $recherche = $query->get('recherche');
+                $filters = new SortieSearchFilters();
+                $filters->participant = $user;
+                if($siteId) $filters->siteId = $siteId;
+                if($dateMin) $filters->dateMin = new \DateTime($dateMin);
+                if($dateMax) $filters->dateMax = new \DateTime($dateMax);
+                if($organisateur) $filters->organisateur = true;
+                if($inscrit) $filters->inscrit = true;
+                if($nonInscrit) $filters->nonInscrit = true;
+                if($sortiesPassees) $filters->sortiesPassees = true;
+                if($recherche) $filters->recherche = $recherche;
+                return $this->sortieRepository->findSortieByFilters($filters);
+            } catch (\Exception $e) {
+                throw new SortieFetchFilteredException($e->getMessage());
             }
         }
     }
