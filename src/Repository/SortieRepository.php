@@ -63,8 +63,8 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if($sortiesPassees){
-            $qb->andWhere('etat.id = :etatId')
-                ->setParameter('etatId', 11);
+            $qb->andWhere('etat.id IN (:etatId)')
+                ->setParameter('etatId', [11, 12]);
         }
 
         return $qb->getQuery()->getResult();
