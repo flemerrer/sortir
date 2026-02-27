@@ -16,6 +16,12 @@ class EtatRepository extends ServiceEntityRepository
         parent::__construct($registry, Etat::class);
     }
 
+    public function getEtats(): array
+    {
+        $etats = $this->findAll();
+        return array_column($etats, null, 'libelle');
+    }
+
     //    /**
     //     * @return Etat[] Returns an array of Etat objects
     //     */
