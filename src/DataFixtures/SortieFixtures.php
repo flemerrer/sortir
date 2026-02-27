@@ -16,13 +16,27 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
 
+        $sortie0 = new Sortie();
+        $sortie0->setNom("Slip n slide");
+        $sortie0->setDateHeureDebut(new \DateTimeImmutable("2025-09-31 18:30:00"));
+        $sortie0->setDateLimiteInscription(new \DateTimeImmutable("2025-09-25"));
+        $sortie0->setDuree(175);
+        $sortie0->setNbInscriptionsMax(10);
+        $sortie0->setEtat($this->getReference("Passée", Etat::class));
+        $participant1 = $this->getReference("participant1", Participant::class);
+        $sortie0->setOrganisateur($participant1);
+        $sortie0->addParticipant($participant1);
+        $sortie0->setLieu($this->getReference("AVEC", Lieu::class));
+        $sortie0->setSite($this->getReference("Rennes", Site::class));
+        $manager->persist($sortie0);
+
         $sortie1 = new Sortie();
         $sortie1->setNom("Afterwork nems et ti ponche");
-        $sortie1->setDateHeureDebut(new \DateTimeImmutable("2026-09-31 18:30:00"));
-        $sortie1->setDateLimiteInscription(new \DateTimeImmutable("2026-09-25"));
+        $sortie1->setDateHeureDebut(new \DateTimeImmutable("2026-03-02 15:30:00"));
+        $sortie1->setDateLimiteInscription(new \DateTimeImmutable("2026-03-2"));
         $sortie1->setDuree(240);
         $sortie1->setNbInscriptionsMax(15);
-        $sortie1->setEtat($this->getReference("Ouverte", Etat::class));
+        $sortie1->setEtat($this->getReference("Clôturée", Etat::class));
         $participant1 = $this->getReference("participant1", Participant::class);
         $sortie1->setOrganisateur($participant1);
         $sortie1->addParticipant($participant1);
@@ -32,11 +46,11 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
         $sortie2 = new Sortie();
         $sortie2->setNom("Babyfoot et bières sans alcool");
-        $sortie2->setDateHeureDebut(new \DateTimeImmutable("2026-09-15 18:30:00"));
-        $sortie2->setDateLimiteInscription(new \DateTimeImmutable("2026-09-12"));
+        $sortie2->setDateHeureDebut(new \DateTimeImmutable("2026-03-02 11:30:00"));
+        $sortie2->setDateLimiteInscription(new \DateTimeImmutable("2026-03-02"));
         $sortie2->setDuree(240);
         $sortie2->setNbInscriptionsMax(6);
-        $sortie2->setEtat($this->getReference("Ouverte", Etat::class));
+        $sortie2->setEtat($this->getReference("Activité en cours", Etat::class));
         $participant2 = $this->getReference("participant2", Participant::class);
         $sortie2->setOrganisateur($participant2);
         $sortie2->addParticipant($participant2);
@@ -88,6 +102,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
         $manager->flush();
     }
+
 
     public function getDependencies(): array
     {
