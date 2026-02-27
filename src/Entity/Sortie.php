@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Models\SortieDTO;
 use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -207,8 +208,23 @@ class Sortie
         return $this;
     }
 
-    public function isOrganisateur(UserInterface $user)
+    public function isOrganisateur(UserInterface $user): bool
     {
         return $this->organisateur->getId() === $user->getId();
+    }
+
+    public function buildFromDTO(SortieDTO $dto): void
+    {
+        $this->setNom($dto->nom);
+        $this->setDuree($dto->duree);
+        $this->setDateHeureDebut($dto->dateHeureDebut);
+        $this->setDateLimiteInscription($dto->dateLimiteInscription);
+        $this->setNbInscriptionsMax($dto->nbInscriptionsMax);
+        $this->setInfosSortie($dto->infosSortie);
+    }
+
+    public function isCancellable() : bool
+    {
+        return  in_array($this->getEtat()->getLibelle(), ["Créée", "Ouverte", "Clôturée"]);
     }
 }
