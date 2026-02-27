@@ -6,9 +6,10 @@
     use App\Form\SortieType;
     use App\Models\SortieDTO;
     use App\Repository\EtatRepository;
-    use App\Repository\SortieRepository;
     use App\Service\SortieInscriptionService;
     use App\Service\SortieManagerService;
+    use App\Repository\SiteRepository;
+    use App\Repository\SortieRepository;
     use Doctrine\ORM\EntityManagerInterface;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
@@ -31,12 +32,24 @@
          * @return Response
          */
         #[\Symfony\Component\Routing\Annotation\Route('/sorties', 'app_sortie_list')]
-        public function list(SortieRepository $sortieRepository): Response
+ public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository)
         {
-            $sorties = $sortieRepository->findAll();
+            $siteId = $request->query->getInt('site') ?: null;
+            $dateMin = $request->query->get('dateMin');
+            $dateMax = $request->query->get('dateMax');
+            $organisateur = $request->query->get('organisateur');
+            $inscrit = $request->query->get('inscrit');
+            $nonInscrit = $request->query->get('nonInscrit');
+            $sortiesPassees = $request->query->get('sortiesPassees');
+            $recherche = $request->query->get('recherche');
 
+            $sorties = $sortieRepository->findSortieByFilters($siteId, $dateMin ? new \DateTime($dateMin) : null, $dateMax ? new \DateTime($dateMax) : null, $organisateur, $inscrit, $nonInscrit, $sortiesPassees, $this->getUser(), $recherche);
+            
+
+            $sites = $siteRepository->findAll();
             return $this->render('/sorties/sorties.html.twig', [
                 'sorties' => $sorties,
+                'sites' => $sites
             ]);
         }
 
