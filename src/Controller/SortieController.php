@@ -3,14 +3,16 @@
     namespace App\Controller;
 
     use App\Entity\Sortie;
+    use App\Exception\SiteFetchException;
     use App\Exception\SortieCancelException;
     use App\Exception\SortieCreateException;
+    use App\Exception\SortieFetchFilteredException;
     use App\Exception\SortiePublishException;
     use App\Exception\SortieUpdateException;
     use App\Exception\SortieDeleteException;
     use App\Form\SortieType;
     use App\Models\SortieDTO;
-    use App\Repository\SortieRepository;
+    use App\Service\SiteService;
     use App\Service\SortieInscriptionService;
     use App\Service\SortieService;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,28 +32,28 @@
         }
 
         /**
-         * @param SortieRepository $sortieRepository
          * @return Response
+         * @throws SiteFetchException
          */
         #[Route('/sorties', name: 'app_sortie_list')]
- public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository)
+ public function list(Request $request, SiteService $siteService)
         {
-            $siteId = $request->query->getInt('site') ?: null;
-            $dateMin = $request->query->get('dateMin');
-            $dateMax = $request->query->get('dateMax');
-            $organisateur = $request->query->get('organisateur');
-            $inscrit = $request->query->get('inscrit');
-            $nonInscrit = $request->query->get('nonInscrit');
-            $sortiesPassees = $request->query->get('sortiesPassees');
-            $recherche = $request->query->get('recherche');
+            try {
+                $sites = $siteService->getAllSites();
+                $sorties = $this->sortieService->getSortieWithFilters($request->query, $this->getUser());
 
-            $sorties = $sortieRepository->findSortieByFilters($siteId, $dateMin ? new \DateTime($dateMin) : null, $dateMax ? new \DateTime($dateMax) : null, $organisateur, $inscrit, $nonInscrit, $sortiesPassees, $this->getUser(), $recherche);
-            
-
-            $sites = $siteRepository->findAll();
+                return $this->render('/sorties/sorties.html.twig', [
+                    'sorties' => $sorties,
+                    'sites' => $sites
+                ]);
+            } catch (SortieFetchFilteredException $e) {
+                $this->addFlash('error', 'Erreur lors de la récupération des sorties : ' . $e->getMessage());
+            } catch (SiteFetchException $e) {
+                $this->addFlash('error', 'Erreur lors de la récupération des sites : ' . $e->getMessage());
+            }
             return $this->render('/sorties/sorties.html.twig', [
-                'sorties' => $sorties,
-                'sites' => $sites
+                'sorties' => [],
+                'sites' => []
             ]);
         }
 

@@ -9,13 +9,9 @@
     /**
      * Service responsable de la gestion des Etats
      */
-    class lieuService
+    class LieuService
     {
 
-
-        /**
-         * @param EntityManagerInterface $em
-         */
         public function __construct(
             private readonly EntityManagerInterface $em
         )
