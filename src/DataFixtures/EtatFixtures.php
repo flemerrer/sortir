@@ -40,6 +40,11 @@ class EtatFixtures extends Fixture
         $this->addReference("Annulée", $etat6);
         $manager->persist($etat6);
 
+        $etat7 = new Etat();
+        $etat7->setLibelle("Archivée");
+        $this->addReference("Archivée", $etat7);
+        $manager->persist($etat7);
+
         $manager->flush();
     }
 }
