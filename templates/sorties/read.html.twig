@@ -8,10 +8,18 @@
         <h5>Détails</h5>
         <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
         <p>Durée prévue : {{ sortie.duree }}</p>
-        <p>Organisé par : {{ sortie.organisateur.getNomPrenom }}</p>
-        <p>Campus de : {{ sortie.site.nom }}</p>
-        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Organisé par : 
+            {% if sortie.organisateur %}
+                <a href="{{ path('app_profil_afficher', {id: sortie.organisateur.id}) }}">{{ sortie.organisateur.getNomPrenom }}</a>
+            {% else %}
+                Non défini
+            {% endif %}
+        </p>
+        <p>Campus de : {{ sortie.site ? sortie.site.nom : 'Non défini' }}</p>
+        <p>Lieu : {{ sortie.lieu ? sortie.lieu.nom : 'Non défini' }}</p>
+        {% if sortie.lieu %}
         <p>Coordonnées : {{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}</p>
+        {% endif %}
         <p>Description : </p>
         <p>{{ sortie.infosSortie }}</p>
         <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
@@ -19,7 +27,7 @@
         <h5>Participants</h5>
         <ul>
         {% for participant in sortie.participants %}
-            <li>{{ participant.nomPrenom }}</li>
+            <li><a href="{{ path('app_profil_afficher', {id: participant.id}) }}">{{ participant.nomPrenom }}</a></li>
         {% endfor %}
         </ul>
         {% if editionAllowed %}

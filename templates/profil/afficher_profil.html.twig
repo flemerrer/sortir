@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ participant.pseudo }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">{{ participant.pseudo }}</h1>
+            <p class="text-center text-muted small">En titre : afficher le pseudo du participant</p>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            {# Photo du participant #}
+                            <i class="fas fa-user-circle fa-10x text-secondary"></i>
+                        </div>
+
+                        <div class="col-md-8">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-muted">Prénom :</th>
+                                        <td>{{ participant.prenom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="text-muted">Nom :</th>
+                                        <td>{{ participant.nom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="text-muted">Téléphone :</th>
+                                        <td>{{ participant.telephone ?? 'Non renseigné' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="text-muted">Email :</th>
+                                        <td>{{ participant.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="text-muted">Ville de rattachement :</th>
+                                        <td>{{ participant.site ? participant.site.nom : 'Non renseigné' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
