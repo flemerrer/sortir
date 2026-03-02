@@ -23,6 +23,7 @@
     /**
      * Controller responsable des routes liées aux Sorties
      */
+    #[Route('/sorties')]
     final class SortieController extends AbstractController
     {
         public function __construct(
@@ -35,7 +36,7 @@
          * @return Response
          * @throws SiteFetchException
          */
-        #[Route('/sorties', name: 'app_sortie_list')]
+        #[Route('', name: 'app_sortie_list')]
  public function list(Request $request, SiteService $siteService): Response
         {
             try {
@@ -59,7 +60,7 @@
          * @param Request $request
          * @return Response
          */
-        #[Route("/sorties/add", name: "app_sortie_add", methods: ["GET", "POST"])]
+        #[Route("/add", name: "app_sortie_add", methods: ["GET", "POST"])]
         public function create(Request $request): Response
         {
             $createSortieDTO = new SortieDTO();
@@ -85,7 +86,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}", name: "app_sortie_read", methods: ["GET"])]
+        #[Route("/{id}", name: "app_sortie_read", methods: ["GET"])]
         public function read(Sortie $sortie): Response
         {
             $userCanEdit = $this->userCanEdit($sortie);
@@ -97,7 +98,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
+        #[Route("/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
         public function edit(Request $request, Sortie $sortie) : Response
         {
             if ($this->userCanEdit($sortie)) {
@@ -129,7 +130,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
+        #[Route("/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
         public function publish(Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie) &&  $sortie->getEtat()->getLibelle() === "Créée") {
@@ -149,7 +150,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
+        #[Route("/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
         public function cancel(Sortie $sortie) : Response
         {
             if ($this->userCanEdit($sortie) && $sortie->isCancellable()) {
@@ -169,7 +170,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/delete", name: "app_sortie_delete", methods: ["POST"])]
+        #[Route("/{id}/delete", name: "app_sortie_delete", methods: ["POST"])]
         public function delete(Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie)) {
@@ -193,7 +194,7 @@
          * @param SortieInscriptionService $inscriptionService
          * @return Response
          */
-        #[Route("/sorties/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
+        #[Route("/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
         public function inscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
@@ -215,7 +216,7 @@
          * @param SortieInscriptionService $inscriptionService
          * @return Response
          */
-        #[Route("/sorties/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
+        #[Route("/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
         public function desinscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
