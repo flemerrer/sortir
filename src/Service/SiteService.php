@@ -31,7 +31,7 @@
             try {
                 return $this->siteRepository->findAll();
             } catch (\Exception $e) {
-                $this->logger->error('Error creating sortie: ' . $e->getMessage(), ['exception' => $e]);
+                $this->logger->error('Error fetching sites: ' . $e->getMessage(), ['exception' => $e]);
                 throw new SiteFetchException();
             }
         }

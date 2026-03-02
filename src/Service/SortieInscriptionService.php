@@ -4,15 +4,18 @@ namespace App\Service;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Models\EtatLibelle;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
- * Service de la couche métier qui gère les inscriptions aux sorties
+ * Service responsable des inscriptions aux Sorties
  */
 class SortieInscriptionService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -22,11 +25,12 @@ class SortieInscriptionService
      * @param Sortie $sortie La sortie à laquelle s'inscrire
      * @param Participant $participant Le participant qui s'inscrit
      * @return array ['success' => bool, 'message' => string]
+     * @throws SortieSubscribeException
      */
     public function inscrireParticipant(Sortie $sortie, Participant $participant): array
     {
         // Vérifier que la sortie est dans l'état "Ouverte"
-        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== 'Ouverte') {
+        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== EtatLibelle::OUVERTE->value) {
             return [
                 'success' => false,
                 'message' => 'Cette sortie n\'est pas ouverte aux inscriptions.'
@@ -70,17 +74,22 @@ class SortieInscriptionService
         }
 
         // Inscription du participant
-        $sortie->addParticipant($participant);
-        $participant->addSortieParticipee($sortie);
+        try {
+            $sortie->addParticipant($participant);
+            $participant->addSortieParticipee($sortie);
 
-        $this->entityManager->persist($sortie);
-        $this->entityManager->persist($participant);
-        $this->entityManager->flush();
+            $this->entityManager->persist($sortie);
+            $this->entityManager->persist($participant);
+            $this->entityManager->flush();
 
-        return [
-            'success' => true,
-            'message' => 'Inscription réussie !'
-        ];
+            return [
+                'success' => true,
+                'message' => 'Inscription réussie !'
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Error subscribing user: ' . $e->getMessage(), ['exception' => $e]);
+            throw new SortieSubscribeException();
+        }
     }
 
     /**
@@ -89,11 +98,12 @@ class SortieInscriptionService
      * @param Sortie $sortie La sortie de laquelle se désinscrire
      * @param Participant $participant Le participant qui se désinscrit
      * @return array ['success' => bool, 'message' => string]
+     * @throws SortieUnsubscribeException
      */
     public function desinscrireParticipant(Sortie $sortie, Participant $participant): array
     {
         // Vérifier que la sortie est dans l'état "Ouverte"
-        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== 'Ouverte') {
+        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== EtatLibelle::OUVERTE->value) {
             return [
                 'success' => false,
                 'message' => 'Cette sortie n\'est pas ouverte, vous ne pouvez pas vous désinscrire.'
@@ -118,17 +128,22 @@ class SortieInscriptionService
         }
 
         // Désinscription du participant
-        $sortie->removeParticipant($participant);
-        $participant->removeSortieParticipee($sortie);
+        try {
+            $sortie->removeParticipant($participant);
+            $participant->removeSortieParticipee($sortie);
 
-        $this->entityManager->persist($sortie);
-        $this->entityManager->persist($participant);
-        $this->entityManager->flush();
+            $this->entityManager->persist($sortie);
+            $this->entityManager->persist($participant);
+            $this->entityManager->flush();
 
-        return [
-            'success' => true,
-            'message' => 'Désinscription réussie !'
-        ];
+            return [
+                'success' => true,
+                'message' => 'Désinscription réussie !'
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Error unsubscribing user: ' . $e->getMessage(), ['exception' => $e]);
+            throw new SortieUnsubscribeException();
+        }
     }
 
     /**
@@ -141,7 +156,7 @@ class SortieInscriptionService
     public function peutSinscrire(Sortie $sortie, Participant $participant): bool
     {
         // Vérifier l'état
-        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== 'Ouverte') {
+        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== EtatLibelle::OUVERTE->value) {
             return false;
         }
 
@@ -180,7 +195,7 @@ class SortieInscriptionService
     public function peutSeDesinscrire(Sortie $sortie, Participant $participant): bool
     {
         // Vérifier l'état
-        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== 'Ouverte') {
+        if (!$sortie->getEtat() || $sortie->getEtat()->getLibelle() !== EtatLibelle::OUVERTE->value) {
             return false;
         }
 

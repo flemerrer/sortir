@@ -4,6 +4,7 @@
 
     use App\Entity\Participant;
     use App\Entity\Sortie;
+    use App\Models\EtatLibelle;
     use App\Models\SortieSearchFilters;
     use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
     use Doctrine\Persistence\ManagerRegistry;
@@ -65,7 +66,7 @@
 
             if ($filters->sortiesPassees) {
                 $qb->andWhere('etat.libelle IN (:etatLibelles)')
-                    ->setParameter('etatLibelles', ["Passée", "Annulée"]);
+                    ->setParameter('etatLibelles', [EtatLibelle::PASSEE->value, EtatLibelle::ANNULEE->value]);
             }
 
             return $qb->getQuery()->getResult();

@@ -9,7 +9,8 @@
     use App\Exception\SortieDeleteException;
     use App\Exception\SortieFetchFilteredException;
     use App\Exception\SortiePublishException;
-    use App\Exception\SortieUpdateException;
+    use App\Exception\LieuCreateException;
+    use App\Models\EtatLibelle;
     use App\Models\SortieDTO;
     use App\Models\SortieSearchFilters;
     use App\Repository\EtatRepository;
@@ -33,7 +34,6 @@
         {
         }
 
-
         /**
          * @param SortieDTO $dto
          * @throws SortieCreateException
@@ -47,7 +47,7 @@
                 $sortie->setOrganisateur($user);
                 $sortie->addParticipant($user);
                 $sortie->setSite($user->getSite());
-                $etat = $this->etatRepository->findOneBy(['libelle' => 'Créée']);
+                $etat = $this->etatRepository->findCreee();
                 $sortie->setEtat($etat);
                 $this->em->persist($sortie);
                 $this->em->flush();
@@ -64,6 +64,7 @@
          * @param SortieDTO $dto
          * @param Sortie $sortie
          * @return void
+         * @throws LieuCreateException
          */
         public function updateSortie(SortieDTO $dto, Sortie $sortie): void
         {
@@ -74,7 +75,7 @@
                 $this->em->flush();
             } catch (\Exception $e) {
                 $this->logger->error('Error updating sortie: ' . $e->getMessage(), ['exception' => $e]);
-                throw new SortieUpdateException();
+                throw new LieuCreateException();
             }
         }
 
@@ -101,7 +102,7 @@
         public function publishSortie(Sortie $sortie): void
         {
             try {
-                $open = $this->etatRepository->findOneBy(['libelle' => 'Ouverte']);
+                $open = $this->etatRepository->findOuverte();
                 $sortie->setEtat($open);
                 $this->em->flush();
             } catch (\Exception $e) {

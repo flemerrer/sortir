@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Models\EtatLibelle;
 use App\Models\SortieDTO;
 use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -236,6 +237,6 @@ class Sortie
 
     public function isCancellable() : bool
     {
-        return  in_array($this->getEtat()->getLibelle(), ["Créée", "Ouverte", "Clôturée"]);
+        return  in_array($this->getEtat()->getLibelle(), [EtatLibelle::CREEE->value, EtatLibelle::OUVERTE->value, EtatLibelle::CLOTUREE->value]);
     }
 }
