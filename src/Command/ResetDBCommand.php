@@ -11,7 +11,7 @@
     use Symfony\Component\Process\Process;
 
     #[AsCommand(name: 'app:reset-db', description: 'Drop, recreate DB schema and load fixtures (dev only).')]
-    class RunCommand extends Command
+    class ResetDBCommand extends Command
     {
         protected function execute(InputInterface $input, OutputInterface $output): int
         {

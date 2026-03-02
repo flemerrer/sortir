@@ -15,3 +15,7 @@ run-dev:
 # Start a dev server
 run:
     symfony serve
+
+# Runs the scheduler to update Sortie entities periodically
+schedule:
+    symfony console messenger:consume scheduler_sortie_update -vv
