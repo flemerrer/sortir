@@ -5,6 +5,17 @@
 {% block body %}
     <div>
         <h1>{{ sortie.getNom }}</h1>
+        {% if userCanEdit %}
+            <p>Statut : {{ sortie.etat.libelle }}</p>
+            {% if sortie.etat.libelle in ["Ouverte", "Clôturée"] %}
+                <a class="" href="{{ path('app_sortie_cancel', { id: sortie.id }) }}">Annuler</a>
+            {% endif %}
+            {% if sortie.etat.libelle === "Créée" %}
+                <a class="" href="{{ path('app_sortie_publish', { id: sortie.id }) }}">Publier</a>
+            {% endif %}
+            <a class="" href="{{ path('app_sortie_edit', { id: sortie.id }) }}">Modifier</a>
+            <a class="" href="{{ path('app_sortie_delete', { id: sortie.id }) }}">Supprimer</a>
+        {% endif %}
         <h5>Détails</h5>
         <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
         <p>Durée prévue : {{ sortie.duree }}</p>
@@ -30,10 +41,6 @@
             <li><a href="{{ path('app_profil_afficher', {id: participant.id}) }}">{{ participant.nomPrenom }}</a></li>
         {% endfor %}
         </ul>
-        {% if editionAllowed %}
-            <a class="" href={{ path('app_sortie_edit', { id: sortie.id }) }}>Modifier</a>
-        {% endif %}
-        &nbsp;
         <a class="" href="">S'inscrire</a>
     </div>
 {% endblock %}
