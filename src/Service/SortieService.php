@@ -15,6 +15,7 @@
     use App\Repository\EtatRepository;
     use App\Repository\SortieRepository;
     use Doctrine\ORM\EntityManagerInterface;
+    use Psr\Log\LoggerInterface;
     use Symfony\Component\HttpFoundation\InputBag;
 
     /**
@@ -26,7 +27,8 @@
             private readonly EntityManagerInterface $em,
             private readonly LieuService            $lieuService,
             private readonly EtatRepository         $etatRepository,
-            private readonly SortieRepository       $sortieRepository
+            private readonly SortieRepository       $sortieRepository,
+            private readonly LoggerInterface        $logger
         )
         {
         }
@@ -51,9 +53,10 @@
                 $this->em->flush();
                 return $sortie;
 //                We should be able to narrow specific exceptions and add custom messages for each case
+//                Add new catch clauses when errors are encoutered
             } catch (\Exception $e) {
-                //todo: implement logger and log the original exception
-                throw new SortieCreateException($e->getMessage());
+                $this->logger->error('Error creating sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortieCreateException();
             }
         }
 
@@ -70,7 +73,8 @@
                 $sortie->setSite($dto->site);
                 $this->em->flush();
             } catch (\Exception $e) {
-                throw new SortieUpdateException($e->getMessage());
+                $this->logger->error('Error updating sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortieUpdateException();
             }
         }
 
@@ -101,7 +105,8 @@
                 $sortie->setEtat($open);
                 $this->em->flush();
             } catch (\Exception $e) {
-                throw new SortiePublishException($e->getMessage());
+                $this->logger->error('Error publishing sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortiePublishException();
             }
         }
 
@@ -117,7 +122,8 @@
                 $sortie->setEtat($open);
                 $this->em->flush();
             } catch (\Exception $e) {
-                throw new SortieCancelException($e->getMessage());
+                $this->logger->error('Error canceling sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortieCancelException();
             }
         }
 
@@ -132,7 +138,8 @@
                 $this->em->remove($sortie);
                 $this->em->flush();
             } catch (\Exception $e) {
-                throw new SortieDeleteException($e->getMessage());
+                $this->logger->error('Error deleting sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortieDeleteException();
             }
         }
 
@@ -149,17 +156,18 @@
                 $recherche = $query->get('recherche');
                 $filters = new SortieSearchFilters();
                 $filters->participant = $user;
-                if($siteId) $filters->siteId = $siteId;
-                if($dateMin) $filters->dateMin = new \DateTime($dateMin);
-                if($dateMax) $filters->dateMax = new \DateTime($dateMax);
-                if($organisateur) $filters->organisateur = true;
-                if($inscrit) $filters->inscrit = true;
-                if($nonInscrit) $filters->nonInscrit = true;
-                if($sortiesPassees) $filters->sortiesPassees = true;
-                if($recherche) $filters->recherche = $recherche;
+                if ($siteId) $filters->siteId = $siteId;
+                if ($dateMin) $filters->dateMin = new \DateTime($dateMin);
+                if ($dateMax) $filters->dateMax = new \DateTime($dateMax);
+                if ($organisateur) $filters->organisateur = true;
+                if ($inscrit) $filters->inscrit = true;
+                if ($nonInscrit) $filters->nonInscrit = true;
+                if ($sortiesPassees) $filters->sortiesPassees = true;
+                if ($recherche) $filters->recherche = $recherche;
                 return $this->sortieRepository->findSortieByFilters($filters);
             } catch (\Exception $e) {
-                throw new SortieFetchFilteredException($e->getMessage());
+                $this->logger->error('Error filtering sorties: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SortieFetchFilteredException();
             }
         }
     }

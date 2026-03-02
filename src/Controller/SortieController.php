@@ -36,7 +36,7 @@
          * @throws SiteFetchException
          */
         #[Route('/sorties', name: 'app_sortie_list')]
- public function list(Request $request, SiteService $siteService)
+ public function list(Request $request, SiteService $siteService): Response
         {
             try {
                 $sites = $siteService->getAllSites();
@@ -46,10 +46,8 @@
                     'sorties' => $sorties,
                     'sites' => $sites
                 ]);
-            } catch (SortieFetchFilteredException $e) {
-                $this->addFlash('error', 'Erreur lors de la récupération des sorties : ' . $e->getMessage());
-            } catch (SiteFetchException $e) {
-                $this->addFlash('error', 'Erreur lors de la récupération des sites : ' . $e->getMessage());
+            } catch (SortieFetchFilteredException|SiteFetchException $e) {
+                $this->addFlash('error', $e->getMessage());
             }
             return $this->render('/sorties/sorties.html.twig', [
                 'sorties' => [],
@@ -75,7 +73,7 @@
                     $this->addFlash("success", "Sortie créée avec succès.");
                     return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
                 } catch (SortieCreateException $e) {
-                    $this->addFlash("error", "Erreur lors de la création de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             }
             return $this->render("/sorties/addOrEdit.html.twig", [
@@ -114,7 +112,7 @@
                         $this->addFlash("success", "Sortie modifiée avec succès.");
                         return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
                     } catch (SortieUpdateException $e) {
-                        $this->addFlash("error", "Erreur lors de la modification de la sortie : {$e->getMessage()}");
+                        $this->addFlash("error", $e->getMessage());
                     }
                 }
                 return $this->render("/sorties/addOrEdit.html.twig", [
@@ -139,7 +137,7 @@
                     $this->sortieService->publishSortie($sortie);
                     $this->addFlash("success", "Sortie publiée avec succès.");
                 } catch (SortiePublishException $e) {
-                    $this->addFlash("error", "Erreur lors de la publication de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission de publier cette sortie.");
@@ -159,7 +157,7 @@
                     $this->sortieService->cancelSortie($sortie);
                     $this->addFlash("success", "Sortie annulée avec succès.");
                 } catch (SortieCancelException $e) {
-                    $this->addFlash("error", "Erreur lors de l'annulation de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission d'annuler cette sortie.");
@@ -180,7 +178,7 @@
                     $this->addFlash("success", "Sortie supprimée avec succès.");
                     return $this->redirectToRoute("app_sortie_list");
                 } catch (SortieDeleteException $e) {
-                    $this->addFlash("error", "Erreur lors de la suppression de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission de supprimer cette sortie.");
