@@ -14,6 +14,10 @@ when@dev:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine", "!console"]
+            error_log:
+                type: stream
+                path: "%kernel.logs_dir%/errors.log"
+                level: error
 
 when@test:
     monolog:

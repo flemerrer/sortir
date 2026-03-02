@@ -7,6 +7,7 @@
     use App\Models\SortieDTO;
     use App\Repository\SiteRepository;
     use Doctrine\ORM\EntityManagerInterface;
+    use Psr\Log\LoggerInterface;
 
     /**
      * Service responsable de la gestion des Sites
@@ -16,6 +17,7 @@
 
         public function __construct(
             private readonly SiteRepository $siteRepository,
+            private readonly LoggerInterface $logger
         )
         {
         }
@@ -29,7 +31,8 @@
             try {
                 return $this->siteRepository->findAll();
             } catch (\Exception $e) {
-                throw new SiteFetchException('Erreur lors de la récupération des sites: ' . $e->getMessage());
+                $this->logger->error('Error creating sortie: ' . $e->getMessage(), ['exception' => $e]);
+                throw new SiteFetchException();
             }
         }
 

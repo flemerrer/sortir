@@ -23,6 +23,7 @@
     /**
      * Controller responsable des routes liées aux Sorties
      */
+    #[Route('/sorties')]
     final class SortieController extends AbstractController
     {
         public function __construct(
@@ -35,8 +36,8 @@
          * @return Response
          * @throws SiteFetchException
          */
-        #[Route('/sorties', name: 'app_sortie_list')]
- public function list(Request $request, SiteService $siteService)
+        #[Route('', name: 'app_sortie_list')]
+ public function list(Request $request, SiteService $siteService): Response
         {
             try {
                 $sites = $siteService->getAllSites();
@@ -46,10 +47,8 @@
                     'sorties' => $sorties,
                     'sites' => $sites
                 ]);
-            } catch (SortieFetchFilteredException $e) {
-                $this->addFlash('error', 'Erreur lors de la récupération des sorties : ' . $e->getMessage());
-            } catch (SiteFetchException $e) {
-                $this->addFlash('error', 'Erreur lors de la récupération des sites : ' . $e->getMessage());
+            } catch (SortieFetchFilteredException|SiteFetchException $e) {
+                $this->addFlash('error', $e->getMessage());
             }
             return $this->render('/sorties/sorties.html.twig', [
                 'sorties' => [],
@@ -61,7 +60,7 @@
          * @param Request $request
          * @return Response
          */
-        #[Route("/sorties/add", name: "app_sortie_add", methods: ["GET", "POST"])]
+        #[Route("/add", name: "app_sortie_add", methods: ["GET", "POST"])]
         public function create(Request $request): Response
         {
             $createSortieDTO = new SortieDTO();
@@ -75,7 +74,7 @@
                     $this->addFlash("success", "Sortie créée avec succès.");
                     return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
                 } catch (SortieCreateException $e) {
-                    $this->addFlash("error", "Erreur lors de la création de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             }
             return $this->render("/sorties/addOrEdit.html.twig", [
@@ -87,7 +86,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}", name: "app_sortie_read", methods: ["GET"])]
+        #[Route("/{id}", name: "app_sortie_read", methods: ["GET"])]
         public function read(Sortie $sortie): Response
         {
             $userCanEdit = $this->userCanEdit($sortie);
@@ -99,7 +98,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
+        #[Route("/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
         public function edit(Request $request, Sortie $sortie) : Response
         {
             if ($this->userCanEdit($sortie)) {
@@ -114,7 +113,7 @@
                         $this->addFlash("success", "Sortie modifiée avec succès.");
                         return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
                     } catch (SortieUpdateException $e) {
-                        $this->addFlash("error", "Erreur lors de la modification de la sortie : {$e->getMessage()}");
+                        $this->addFlash("error", $e->getMessage());
                     }
                 }
                 return $this->render("/sorties/addOrEdit.html.twig", [
@@ -131,7 +130,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
+        #[Route("/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
         public function publish(Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie) &&  $sortie->getEtat()->getLibelle() === "Créée") {
@@ -139,7 +138,7 @@
                     $this->sortieService->publishSortie($sortie);
                     $this->addFlash("success", "Sortie publiée avec succès.");
                 } catch (SortiePublishException $e) {
-                    $this->addFlash("error", "Erreur lors de la publication de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission de publier cette sortie.");
@@ -151,7 +150,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
+        #[Route("/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
         public function cancel(Sortie $sortie) : Response
         {
             if ($this->userCanEdit($sortie) && $sortie->isCancellable()) {
@@ -159,7 +158,7 @@
                     $this->sortieService->cancelSortie($sortie);
                     $this->addFlash("success", "Sortie annulée avec succès.");
                 } catch (SortieCancelException $e) {
-                    $this->addFlash("error", "Erreur lors de l'annulation de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission d'annuler cette sortie.");
@@ -171,7 +170,7 @@
          * @param Sortie $sortie
          * @return Response
          */
-        #[Route("/sorties/{id}/delete", name: "app_sortie_delete", methods: ["POST"])]
+        #[Route("/{id}/delete", name: "app_sortie_delete", methods: ["POST"])]
         public function delete(Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie)) {
@@ -180,7 +179,7 @@
                     $this->addFlash("success", "Sortie supprimée avec succès.");
                     return $this->redirectToRoute("app_sortie_list");
                 } catch (SortieDeleteException $e) {
-                    $this->addFlash("error", "Erreur lors de la suppression de la sortie : {$e->getMessage()}");
+                    $this->addFlash("error", $e->getMessage());
                 }
             } else {
                 $this->addFlash("error", "Vous n'avez pas la permission de supprimer cette sortie.");
@@ -195,7 +194,7 @@
          * @param SortieInscriptionService $inscriptionService
          * @return Response
          */
-        #[Route("/sorties/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
+        #[Route("/{id}/inscription", name: "app_sortie_inscription", methods: ["POST"])]
         public function inscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
@@ -217,7 +216,7 @@
          * @param SortieInscriptionService $inscriptionService
          * @return Response
          */
-        #[Route("/sorties/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
+        #[Route("/{id}/desinscription", name: "app_sortie_desinscription", methods: ["POST"])]
         public function desinscrire(Sortie $sortie, SortieInscriptionService $inscriptionService): Response
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
