@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -18,18 +19,28 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:"Le nom est obligatoire.")]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message:"La date de la sortie doit être obligatoire.")]
+    #[Assert\GreaterThan("today", message: "La date de la sortie doit être supérieure à la date d'aujourd'hui")]
     private ?\DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message:"La durée est obligatoire.")]
+    #[Assert\Positive(message:"La durée doit être supérieure à 0.")]
+    #[Assert\Range(min:15, minMessage:"La durée minimale est de {{limit}} minutes.")]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message:"La date limite d'inscription est obligatoire.")]
+    #[Assert\GreaterThan("today", message: "La date limite d'inscription doit être supérieure à la date d'aujourd'hui")]
     private ?\DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message:"Le nombre d'inscription maximum est obligatoire.")]
+    #[Assert\Positive(message:"Le nombre maximum d'inscriptions doit être supérieur à 0.")]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -32,7 +32,7 @@
          * @return Response
          */
         #[\Symfony\Component\Routing\Annotation\Route('/sorties', 'app_sortie_list')]
- public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository)
+        public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository)
         {
             $siteId = $request->query->getInt('site') ?: null;
             $dateMin = $request->query->get('dateMin');
