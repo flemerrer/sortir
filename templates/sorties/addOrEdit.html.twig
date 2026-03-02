@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}{{sortieForm.vars.data.id ? "Éditer la" : "Créer une" }} sortie{% endblock %}
 
 {% block body %}
 	<div>
