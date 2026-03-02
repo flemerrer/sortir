@@ -6,8 +6,10 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
+#[UniqueEntity(fields:['nom', 'rue'], message:'Ce lieu existe déjà.')]
 class Lieu
 {
     #[ORM\Id]
