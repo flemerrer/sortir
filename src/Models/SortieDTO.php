@@ -33,10 +33,6 @@
         public ?string $nouveauLieuLatitude = null;
         public ?string $nouveauLieuLongitude = null;
 
-// TODO: ajouter la possibilité de créer une nouvelle ville en même temps que la sortie
-//            public ?string $nomNouvelleVille,
-//            public ?string $codePostalNouvelleVille
-
         public function loadSortie(Sortie $sortie): void
         {
             $this->id = $sortie->getId();

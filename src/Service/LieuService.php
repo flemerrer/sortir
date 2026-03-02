@@ -7,7 +7,7 @@
     use Doctrine\ORM\EntityManagerInterface;
 
     /**
-     * Service responsable de la gestion des Etats
+     * Service responsable de la gestion des Lieux
      */
     class LieuService
     {

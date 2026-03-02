@@ -45,17 +45,17 @@
 			{{ form_errors(sortieForm.infosSortie) }}
 		</div>
 		<div class="group">
+			{{ form_label(sortieForm.villesDisponibles) }}
+			{{ form_widget(sortieForm.villesDisponibles) }}
+			{{ form_errors(sortieForm.villesDisponibles) }}
+		</div>
+		<div class="group">
 			{{ form_label(sortieForm.lieuxDisponibles) }}
 			{{ form_widget(sortieForm.lieuxDisponibles) }}
 			{{ form_errors(sortieForm.lieuxDisponibles) }}
 		</div>
 		<button id="add-new-location" type="button">Ajouter un nouveau lieu</button>
 		<div id="new-location" class="hidden">
-			<div class="group">
-				{{ form_label(sortieForm.villesDisponibles) }}
-				{{ form_widget(sortieForm.villesDisponibles) }}
-				{{ form_errors(sortieForm.villesDisponibles) }}
-			</div>
 			<div class="group">
 				{{ form_label(sortieForm.nomNouveauLieu) }}
 				{{ form_widget(sortieForm.nomNouveauLieu) }}
