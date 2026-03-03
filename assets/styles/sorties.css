@@ -1,0 +1,46 @@
+.container-sorties{
+    font-family: "Roboto", sans-serif;
+    a{
+    color: #212E53;
+    text-decoration: none;
+    }
+    a:hover{
+        text-decoration: underline;
+    }
+}
+
+h1{
+    text-align: center;
+    font-size: 3em;
+    color:#212E53;
+}
+
+.btn-style {
+    padding: 10px 20px;
+    background-color: #212E53;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+}
+.btn-style:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.container-date{
+    text-align: center;
+    padding:10px;
+    border-radius: 4px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container-list{
+   margin-top: 40px; 
+   padding: 20px; 
+   border-radius: 4px; 
+   box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+}
+
