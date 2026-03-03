@@ -2,6 +2,10 @@
 
 {% block title %}Mon profil{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('styles/sorties.css')}}">
+{% endblock %}
+
 {% block body %}
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -13,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-4 text-center mb-4">
                             {# Photo du participant #}
-                            <div class="mb-3">
+                            <div class="mb-3 mt-3">
                                 <i class="fas fa-user-circle fa-10x text-secondary"></i>
                             </div>
                         </div>
@@ -77,10 +81,10 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-style">
                                     <i class="fas fa-save"></i> Enregistrer
                                 </button>
-                                <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                                <a href="{{ path('app_home') }}" class="btn btn-style">
                                     <i class="fas fa-times"></i> Annuler
                                 </a>
                             </div>
