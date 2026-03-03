@@ -64,8 +64,12 @@
                                 </ul>
                             </div>
                         </div>
-                        {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] %}
-                        <a class="btn btn-style m-0" href="">Je m'inscris</a>
+                        {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] and sortie.participants|length < sortie.nbInscriptionsMax %}
+                         <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-style">
+                                Je m'inscris
+                            </button>
+                        </form>
                         {% endif %}
                     </div>
                     <div class="col-md-3">

@@ -17,7 +17,7 @@
                     <div class="col-md-2">
 
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-8 mb-4">
                         <h1>Liste des sorties</h1>
                     </div>
                     <div class="col-md-2">
@@ -150,11 +150,13 @@
                                         {# Utilisateur non inscrit - vérifier s'il peut s'inscrire #}
                                         {% if sortie.organisateur != app.user %}
                                             {% if sortie.participants|length < sortie.nbInscriptionsMax %}
-                                                <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        S'inscrire
-                                                    </button>
-                                                </form>
+                                                {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] %}
+                                                    <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            S'inscrire
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
                                             {% else %}
                                                 <span class="badge bg-danger">Complet</span>
                                             {% endif %}
