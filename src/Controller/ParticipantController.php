@@ -115,13 +115,23 @@ class ParticipantController extends AbstractController
                 $em->persist($participant);
                 $em->flush();
                 $this->addFlash('success', 'Le participant a bien été ajouté avec succès.');
-                return $this->redirectToRoute('app_home');
+                return $this->redirectToRoute('app_list_participant');
             }catch(ParticipantCreateException $e){
                 $this->addFlash("error", $e->getMessage());
             }
         }
         return $this->render('participant/add-participant.html.twig',[
             "participantForm" => $form->createView(),
+        ]);
+    }
+
+    #[Route('/list-participant', name:'app_list_participant', methods:["GET"])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function listParticipant(ParticipantRepository $participantRepository): Response
+    {
+        $participants = $participantRepository->findAll();
+        return $this->render('/participant/list-participant.html.twig', [
+            'participants' => $participants
         ]);
     }
 }

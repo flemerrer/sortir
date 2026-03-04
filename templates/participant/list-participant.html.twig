@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un participant{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('styles/sorties.css')}}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Liste des participants</h1>
+        </div>
+        <div class="col-md-12">
+            <a href="{{path('app_add_participant')}}" class="btn btn-style">Ajouter</a>
+        </div>
+        <div class="col-md-12 mt-5 mb-5 container-list">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Pseudo</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Téléphone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Administrateur</th>
+                        <th scope="col">Actif</th>
+                        <th scope="col">Site</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for participant in participants %}
+                        <tr>
+                            <th scope="row"><a href="{{path('app_profil_afficher', {id: participant.id})}}">{{ participant.pseudo }}</a></th>
+                            <td>{{ participant.nom }}</td>
+                            <td>{{ participant.prenom }}</td>
+                            <td>{{ participant.telephone }}</td>
+                            <td>{{ participant.email }}</td>
+                            <td>
+                                {% if participant.administrateur == '1'%}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Non</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if participant.actif == '1' %}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Non</span>
+                                {% endif %}
+                            </td>
+                            {% if participant.site %}
+                                <td>{{ participant.site.nom }}</td>
+                            {% else %}
+                                <td> - </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
