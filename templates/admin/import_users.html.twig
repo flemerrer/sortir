@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer des utilisateurs{% endblock %}
+
+{% block body %}
+
+	<h1>Importer des utilisateurs</h1>
+
+	{{ form_start(form) }}
+	{{ form_row(form.csv) }}
+	<button class="btn-style m-2" type="submit">Envoyer</button>
+	{{ form_end(form) }}
+
+{% endblock %}
