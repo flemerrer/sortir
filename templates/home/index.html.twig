@@ -17,7 +17,7 @@
             <a href="{{ path('app_sortie_add') }}" class="btn">Créer une sortie</a>
             <a href="{{ path('app_profil_mon_profil') }}" class="btn">Mon profil</a>
             {% if participant.administrateur %}
-                <a href="#" class="btn">Gérer les utilisateurs</a>
+                <a href="{{path('app_add_participant')}}" class="btn">Gérer les utilisateurs</a>
                 <a href="#" class="btn">Gérer les sites</a>
             {% endif %}
         </div>
