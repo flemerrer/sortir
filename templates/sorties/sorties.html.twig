@@ -152,7 +152,7 @@
                                             {% if sortie.participants|length < sortie.nbInscriptionsMax %}
                                                 {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] %}
                                                     <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
-                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                        <button type="submit" class="btn btn-sm btn-primary">
                                                             S'inscrire
                                                         </button>
                                                     </form>
