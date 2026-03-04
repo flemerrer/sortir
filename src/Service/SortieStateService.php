@@ -4,6 +4,7 @@
 
     use App\Entity\Participant;
     use App\Entity\Sortie;
+    use App\Models\EtatLibelle;
     use App\Repository\EtatRepository;
     use App\Repository\SortieRepository;
     use Doctrine\Common\Collections\ArrayCollection;
@@ -26,8 +27,8 @@
         {
 
             $now = new \DateTime();
-            $archivee = $this->etatRepository->findOneBy(["libelle" => 'Archivée']);
-            $passee = $this->etatRepository->findOneBy(["libelle" => 'Passée']);
+            $archivee = $this->etatRepository->findArchivee();
+            $passee = $this->etatRepository->findPassee();
 
             $archivalDate = $now->sub(new \DateInterval('P30D'))->setTime(0, 0, 0);
 
@@ -48,8 +49,8 @@
         public function startSorties()
         {
             $now = new \DateTime();
-            $cloturee = $this->etatRepository->findOneBy(["libelle" => 'Clôturée']);
-            $ongoing = $this->etatRepository->findOneBy(["libelle" => 'Activité en cours']);
+            $cloturee = $this->etatRepository->findCloturee();
+            $ongoing = $this->etatRepository->findEnCours();
             $queryBuilder = $this->sortieRepository->createQueryBuilder('s');
             $queryBuilder->update()
                 ->set('s.etat', ':etat_en_cours')
@@ -67,8 +68,8 @@
         public function endSorties()
         {
             $now = new \DateTime();
-            $ongoing = $this->etatRepository->findOneBy(["libelle" => 'Activité en cours']);
-            $passee = $this->etatRepository->findOneBy(["libelle" => 'Passée']);
+            $ongoing = $this->etatRepository->findEnCours();
+            $passee = $this->etatRepository->findPassee();
 
             $ongoingSorties = $this->sortieRepository->findBy(['etat' => $ongoing]);
             foreach ($ongoingSorties as $sortie) {

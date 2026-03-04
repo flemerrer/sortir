@@ -7,6 +7,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Models\EtatLibelle;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -22,7 +23,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie0->setDateLimiteInscription(new \DateTimeImmutable("2025-09-25"));
         $sortie0->setDuree(175);
         $sortie0->setNbInscriptionsMax(10);
-        $sortie0->setEtat($this->getReference("Passée", Etat::class));
+        $sortie0->setEtat($this->getReference(EtatLibelle::PASSEE->value, Etat::class));
         $participant1 = $this->getReference("participant1", Participant::class);
         $sortie0->setOrganisateur($participant1);
         $sortie0->addParticipant($participant1);
@@ -36,7 +37,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie1->setDateLimiteInscription(new \DateTimeImmutable("2026-03-2"));
         $sortie1->setDuree(240);
         $sortie1->setNbInscriptionsMax(15);
-        $sortie1->setEtat($this->getReference("Clôturée", Etat::class));
+        $sortie1->setEtat($this->getReference(EtatLibelle::CLOTUREE->value, Etat::class));
         $participant1 = $this->getReference("participant1", Participant::class);
         $sortie1->setOrganisateur($participant1);
         $sortie1->addParticipant($participant1);
@@ -50,7 +51,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie2->setDateLimiteInscription(new \DateTimeImmutable("2026-03-02"));
         $sortie2->setDuree(240);
         $sortie2->setNbInscriptionsMax(6);
-        $sortie2->setEtat($this->getReference("Activité en cours", Etat::class));
+        $sortie2->setEtat($this->getReference(EtatLibelle::EN_COURS->value, Etat::class));
         $participant2 = $this->getReference("participant2", Participant::class);
         $sortie2->setOrganisateur($participant2);
         $sortie2->addParticipant($participant2);
@@ -64,7 +65,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie3->setDateLimiteInscription(new \DateTimeImmutable("2026-09-07"));
         $sortie3->setDuree(240);
         $sortie3->setNbInscriptionsMax(15);
-        $sortie3->setEtat($this->getReference("Ouverte", Etat::class));
+        $sortie3->setEtat($this->getReference(EtatLibelle::OUVERTE->value, Etat::class));
         $participant3 = $this->getReference("participant3", Participant::class);
         $sortie3->setOrganisateur($participant3);
         $sortie3->addParticipant($participant3);
@@ -78,7 +79,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie4->setDateLimiteInscription(new \DateTimeImmutable("2026-09-01"));
         $sortie4->setDuree(240);
         $sortie4->setNbInscriptionsMax(15);
-        $sortie4->setEtat($this->getReference("Annulée", Etat::class));
+        $sortie4->setEtat($this->getReference(EtatLibelle::ANNULEE->value, Etat::class));
         $participant3 = $this->getReference("participant3", Participant::class);
         $sortie4->setOrganisateur($participant3);
         $sortie4->addParticipant($participant3);
@@ -92,7 +93,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $sortie5->setDateLimiteInscription(new \DateTimeImmutable("2027-06-12"));
         $sortie5->setDuree(240);
         $sortie5->setNbInscriptionsMax(15);
-        $sortie5->setEtat($this->getReference("Créée", Etat::class));
+        $sortie5->setEtat($this->getReference(EtatLibelle::CREEE->value, Etat::class));
         $participant3 = $this->getReference("participant3", Participant::class);
         $sortie5->setOrganisateur($participant3);
         $sortie5->addParticipant($participant3);

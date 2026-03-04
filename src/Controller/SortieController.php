@@ -8,13 +8,16 @@
     use App\Exception\SortieCreateException;
     use App\Exception\SortieFetchFilteredException;
     use App\Exception\SortiePublishException;
-    use App\Exception\SortieUpdateException;
+    use App\Exception\LieuCreateException;
     use App\Exception\SortieDeleteException;
     use App\Form\SortieType;
+    use App\Models\EtatLibelle;
     use App\Models\SortieDTO;
     use App\Service\SiteService;
     use App\Service\SortieInscriptionService;
     use App\Service\SortieService;
+    use App\Service\SortieSubscribeException;
+    use App\Service\SortieUnsubscribeException;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +40,7 @@
          * @throws SiteFetchException
          */
         #[Route('', name: 'app_sortie_list')]
- public function list(Request $request, SiteService $siteService): Response
+        public function list(Request $request, SiteService $siteService): Response
         {
             try {
                 $sites = $siteService->getAllSites();
@@ -99,7 +102,7 @@
          * @return Response
          */
         #[Route("/{id}/edit", name: "app_sortie_edit", methods: ["GET", "POST"])]
-        public function edit(Request $request, Sortie $sortie) : Response
+        public function edit(Request $request, Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie)) {
                 $editSortieDTO = new SortieDTO();
@@ -112,7 +115,7 @@
                         $this->sortieService->updateSortie($sortieDTO, $sortie);
                         $this->addFlash("success", "Sortie modifiée avec succès.");
                         return $this->redirectToRoute("app_sortie_read", ["id" => $sortie->getId()]);
-                    } catch (SortieUpdateException $e) {
+                    } catch (LieuCreateException $e) {
                         $this->addFlash("error", $e->getMessage());
                     }
                 }
@@ -133,7 +136,7 @@
         #[Route("/{id}/publish", name: "app_sortie_publish", methods: ["GET"])]
         public function publish(Sortie $sortie): Response
         {
-            if ($this->userCanEdit($sortie) &&  $sortie->getEtat()->getLibelle() === "Créée") {
+            if ($this->userCanEdit($sortie) && $sortie->getEtat()->getLibelle() === EtatLibelle::CREEE->value) {
                 try {
                     $this->sortieService->publishSortie($sortie);
                     $this->addFlash("success", "Sortie publiée avec succès.");
@@ -151,7 +154,7 @@
          * @return Response
          */
         #[Route("/{id}/cancel", name: "app_sortie_cancel", methods: ["GET"])]
-        public function cancel(Sortie $sortie) : Response
+        public function cancel(Sortie $sortie): Response
         {
             if ($this->userCanEdit($sortie) && $sortie->isCancellable()) {
                 try {
@@ -199,14 +202,17 @@
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
             $participant = $this->getUser();
-            $result = $inscriptionService->inscrireParticipant($sortie, $participant);
-            if ($result['success']) {
-                $this->addFlash('success', $result['message']);
-            } else {
-                $this->addFlash('error', $result['message']);
+            try {
+                $result = $inscriptionService->inscrireParticipant($sortie, $participant);
+                if ($result['success']) {
+                    $this->addFlash('success', $result['message']);
+                } else {
+                    $this->addFlash('error', $result['message']);
+                }
+                return $this->redirectToRoute('app_sortie_list');
+            } catch (SortieSubscribeException $e) {
+                $this->addFlash("error", $e->getMessage());
             }
-
-            return $this->redirectToRoute('app_sortie_list');
         }
 
         /**
@@ -221,13 +227,17 @@
         {
             // L'utilisateur est forcément connecté grâce à la configuration security.yaml
             $participant = $this->getUser();
-            $result = $inscriptionService->desinscrireParticipant($sortie, $participant);
-            if ($result['success']) {
-                $this->addFlash('success', $result['message']);
-            } else {
-                $this->addFlash('error', $result['message']);
+            try {
+                $result = $inscriptionService->desinscrireParticipant($sortie, $participant);
+                if ($result['success']) {
+                    $this->addFlash('success', $result['message']);
+                } else {
+                    $this->addFlash('error', $result['message']);
+                }
+                return $this->redirectToRoute('app_sortie_list');
+            } catch (SortieUnsubscribeException $e) {
+                $this->addFlash("error", $e->getMessage());
             }
-            return $this->redirectToRoute('app_sortie_list');
         }
 
         private function userCanEdit(Sortie $sortie)
