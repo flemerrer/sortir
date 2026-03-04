@@ -1,46 +1,82 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}Afficher une sortie{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('styles/sorties.css')}}">
+{% endblock %}
 
 {% block body %}
-    <div>
-        <h1>{{ sortie.getNom }}</h1>
-        {% if userCanEdit %}
-            <p>Statut : {{ sortie.etat.libelle }}</p>
-            {% if sortie.etat.libelle in ["Ouverte", "Clôturée"] %}
-                <a class="" href="{{ path('app_sortie_cancel', { id: sortie.id }) }}">Annuler</a>
-            {% endif %}
-            {% if sortie.etat.libelle === "Créée" %}
-                <a class="" href="{{ path('app_sortie_publish', { id: sortie.id }) }}">Publier</a>
-            {% endif %}
-            <a class="" href="{{ path('app_sortie_edit', { id: sortie.id }) }}">Modifier</a>
-            <a class="" href="{{ path('app_sortie_delete', { id: sortie.id }) }}">Supprimer</a>
-        {% endif %}
-        <h5>Détails</h5>
-        <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
-        <p>Durée prévue : {{ sortie.duree }}</p>
-        <p>Organisé par : 
-            {% if sortie.organisateur %}
-                <a href="{{ path('app_profil_afficher', {id: sortie.organisateur.id}) }}">{{ sortie.organisateur.getNomPrenom }}</a>
-            {% else %}
-                Non défini
-            {% endif %}
-        </p>
-        <p>Campus de : {{ sortie.site ? sortie.site.nom : 'Non défini' }}</p>
-        <p>Lieu : {{ sortie.lieu ? sortie.lieu.nom : 'Non défini' }}</p>
-        {% if sortie.lieu %}
-        <p>Coordonnées : {{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}</p>
-        {% endif %}
-        <p>Description : </p>
-        <p>{{ sortie.infosSortie }}</p>
-        <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
-        <p>Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>
-        <h5>Participants</h5>
-        <ul>
-        {% for participant in sortie.participants %}
-            <li><a href="{{ path('app_profil_afficher', {id: participant.id}) }}">{{ participant.nomPrenom }}</a></li>
-        {% endfor %}
-        </ul>
-        <a class="" href="">S'inscrire</a>
+
+    <div class="container container-sorties mb-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{ sortie.getNom }}</h1>
+            </div>
+            <div class="col-md-12 ">
+                <div class="row ">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-6 container-read">
+                        {% if userCanEdit %}
+                            <div class="row mb-4 align-items-center pb-3" style="border-bottom: 1px solid #0056b3;">
+                                <div class="col-md-4 ">
+                                    <p class="mb-0">Statut : {{ sortie.etat.libelle }}</p>
+                                </div>
+                                <div class="col-md-8 d-flex justify-content-end">
+                                    {% if sortie.etat.libelle in ["Ouverte", "Clôturée"] %}
+                                        <a class="btn btn-style" href="{{ path('app_sortie_cancel', { id: sortie.id }) }}">Annuler</a>
+                                    {% endif %}
+                                    {% if sortie.etat.libelle === "Créée" %}
+                                        <a class="btn btn-style" href="{{ path('app_sortie_publish', { id: sortie.id }) }}">Publier</a>
+                                    {% endif %}
+                                    <a class="btn btn-style" href="{{ path('app_sortie_edit', { id: sortie.id }) }}">Modifier</a>
+                                    <a class="btn btn-style" href="{{ path('app_sortie_delete', { id: sortie.id }) }}">Supprimer</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <h3 class="">Détails</h3>
+                        <p>Date : {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+                        <p>Durée prévue : {{ sortie.duree }} minutes</p>
+                        <p>Organisé par : 
+                            {% if sortie.organisateur %}
+                                <a style="color :#212E53" href="{{ path('app_profil_afficher', {id: sortie.organisateur.id}) }}">{{ sortie.organisateur.getNomPrenom }}</a>
+                            {% else %}
+                                Non défini
+                            {% endif %}
+                        </p>
+                        <p>Campus de : {{ sortie.site ? sortie.site.nom : 'Non défini' }}</p>
+                        <p>Lieu : {{ sortie.lieu ? sortie.lieu.nom : 'Non défini' }}</p>
+                        {% if sortie.lieu %}
+                        <p>Coordonnées : {{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}</p>
+                        {% endif %}
+                        <p>Description : </p>
+                        <p>{{ sortie.infosSortie }}</p>
+                        <p>Places disponibles : {{ sortie.nbInscriptionsMax }}</p>
+                        <p>Date limite d'inscription : {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>
+                        <div class="row pt-3"style="border-top: 1px solid #0056b3;">
+                            <div class="col-md-12">
+                                <h3>Participants</h3>
+                                <ul>
+                                {% for participant in sortie.participants %}
+                                    <li><a style="color :#212E53" href="{{ path('app_profil_afficher', {id: participant.id}) }}">{{ participant.nomPrenom }}</a></li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] and sortie.participants|length < sortie.nbInscriptionsMax %}
+                         <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-style">
+                                Je m'inscris
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
 {% endblock %}

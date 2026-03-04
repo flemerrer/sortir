@@ -2,22 +2,44 @@
 
 {% block title %}Liste sorties{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('styles/sorties.css')}}">
+{% endblock %}
+
 {% block body %}
 
 <div class="container-fluid">
-    <div class="container">
+    <div class="container container-sorties">
         <div class="row">
-            <div class="col-md-12"><a href={{ path('app_sortie_add') }} class="btn btn-secondary">Ajouter une sortie</a></div>
+           
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+
+                    </div>
+                    <div class="col-md-8 mb-4">
+                        <h1>Liste des sorties</h1>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="container-date">
+                            <p class="mb-0">Date : {{ "now"|date("d/m/Y") }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+           
+            <div class="col-md-12"><a href={{ path('app_sortie_add') }} class="btn btn-style">Ajouter une sortie</a></div>
             <div class="col-md-12 mt-5 mb-3">
                 <div class="row">
                     <div class="col-md-1"></div>
                     <form action="" method="get">
                         <div class="col-md-10">
                             <form action="" method="get">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-6">
-                                    <!-- filtre site -->
-                                        <select name="site" class="form-select mb-2">
+                                <div class="row g-2 d-flex align-items-center justify-content-center">
+                                    <div class="col-md-5">
+                                        <!-- filtre site -->
+                                        <select name="site" class="form-select mb-1">
                                             <option value="">-- Tous les sites --</option>
                                             {% for site in sites %}
                                                 <option value="{{ site.id }}"
@@ -26,13 +48,13 @@
                                                 </option>
                                             {% endfor %}
                                         </select>
-                                    <!--filtre dates -->
-                                        <div class="row mb-1">
-                                            <div class="col-md-2"><p>Entre : </p></div>
+                                        <!--filtre dates -->
+                                        <div class="row mb-1 d-flex align-items-center">
+                                            <div class="col-md-2"><p class="mb-0 text-end">Entre : </p></div>
                                             <div class="col-md-4">
                                                 <input type="date" name="dateMin" class="form-control" value="{{ app.request.get('dateMin') }}">
                                             </div>
-                                            <div class="col-md-2"><p>et :</p></div>
+                                            <div class="col-md-2"><p class="mb-0 text-end">et :</p></div>
                                             <div class="col-md-4">
                                                 <input type="date" name="dateMax" class="form-control" value="{{ app.request.get('dateMax') }}">
                                             </div>
@@ -45,7 +67,7 @@
                                         </div>
                                     </div>
                                     <!-- Filtre sortie/participant -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-5 ps-5">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="organisateur" value="1" id="organisateur" {% if app.request.get('organisateur') %}checked{% endif %}>
                                             <label for="organisateur" class="form-check-label">Sorties dont je suis l'organisateur/trice</label>
@@ -64,7 +86,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <button type="submit" class="btn btn-secondary w-100">Rechercher</button>
+                                        <button type="submit" class="btn btn-style">Rechercher</button>
                                     </div>
                                 </div>
                             </form>
@@ -75,7 +97,7 @@
                     <div class="col-md-1"></div>
                 </div>
             </div>
-            <div class="col-md-12 mt-5 mb-5">
+            <div class="col-md-12 mt-5 mb-5 container-list">
                 <table class="table">
                     <thead>
                         <tr>
@@ -128,11 +150,13 @@
                                         {# Utilisateur non inscrit - vérifier s'il peut s'inscrire #}
                                         {% if sortie.organisateur != app.user %}
                                             {% if sortie.participants|length < sortie.nbInscriptionsMax %}
-                                                <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        S'inscrire
-                                                    </button>
-                                                </form>
+                                                {% if sortie.etat.libelle not in ["Annulée", "Clôturée"] %}
+                                                    <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}" style="display: inline;">
+                                                        <button type="submit" class="btn btn-sm btn-primary">
+                                                            S'inscrire
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
                                             {% else %}
                                                 <span class="badge bg-danger">Complet</span>
                                             {% endif %}

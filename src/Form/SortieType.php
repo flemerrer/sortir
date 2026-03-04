@@ -25,28 +25,29 @@
             $minDate = new \DateTime();
             $builder
                 ->add('id', HiddenType::class, ['required' => false])
-                ->add('nom', TextType::class, [])
+                ->add('nom', TextType::class, ['attr' => ['class' => 'form-control mb-2']])
                 ->add('dateHeureDebut', DateTimeType::class, [
                     'widget' => 'single_text',
                     'data' => $minDate,
-                    'attr' => ['min' => $minDate->format('Y-m-d')]
+                    'attr' => ['min' => $minDate->format('Y-m-d'), 'class' => 'form-control mb-2']
                 ])
                 ->add('duree', IntegerType::class, [
                     'label' => "Durée (en minutes)",
                     'data' => 15,
-                    'attr' => ['min' => 15]
+                    'attr' => ['min' => 15,'class' => 'form-control mb-2']
                 ])
                 ->add('dateLimiteInscription', DateTimeType::class, [
                     'widget' => 'single_text',
                     'data' => $minDate,
-                    'attr' => ['min' => $minDate->format('Y-m-d')]
+                    'attr' => ['min' => $minDate->format('Y-m-d'), 'class' => 'form-control mb-2']
                 ])
                 ->add('nbInscriptionsMax', IntegerType::class, [
                     'label' => "Places disponibles",
-                    'attr' => ['min' => 1]
+                    'attr' => ['min' => 1, 'class' => 'form-control mb-2']
                 ])
                 ->add('infosSortie', TextareaType::class, [
                     'required' => false,
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('site', EntityType::class, [
                     'label' => "Site organisateur",
@@ -54,39 +55,45 @@
                     'required' => false,
                     'choice_value' => 'id',
                     'choice_label' => 'getNom',
-                    'placeholder' => false
+                    'placeholder' => false,
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('lieuxDisponibles', EntityType::class, [
-                    'label' => "Choisir un lieu (ou en crér un)*",
+                    'label' => "Choisir un lieu (ou en créer un)*",
                     'class' => Lieu::class,
                     'required' => false,
                     'choice_value' => 'id',
                     'choice_label' => 'getNomVille',
                     'placeholder' => 'Choisir un lieu',
-                    'attr' => ['class' => 'location-select']
+                    'attr' => ['class' => 'location-select form-control mb-2']
                 ])
                 ->add('villesDisponibles', EntityType::class, [
                     'label' => "Ville*",
                     'class' => Ville::class,
                     'required' => false,
                     'choice_label' => 'getNom',
-                    'placeholder' => 'Choisir une ville'
+                    'placeholder' => 'Choisir une ville',
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('nomNouveauLieu', TextType::class, [
                     'required' => false,
                     'label' => 'Nom*',
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('rueNouveauLieu', TextType::class, [
                     'required' => false,
                     'label' => 'Rue*',
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('nouveauLieuLatitude', TextType::class, [
                     'required' => false,
                     'label' => 'Latitude*',
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
                 ->add('nouveauLieuLongitude', TextType::class, [
                     'required' => false,
                     'label' => 'Longitude*',
+                    'attr' => ['class' => 'form-control mb-2']
                 ])
             ;
 
