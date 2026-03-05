@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -121,18 +121,6 @@ class ProfilType extends AbstractType
                 'label' => 'Ma photo',
                 'mapped' => false,
                 'required' => false,
-                'constraints' => [
-                    new Image([
-                        'maxSize' => '2M',
-                        'maxSizeMessage' => 'L\'image ne doit pas dépasser 2 Mo',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG ou GIF)',
-                    ]),
-                ],
             ]);
     }
 

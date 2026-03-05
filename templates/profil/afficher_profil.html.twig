@@ -13,7 +13,14 @@
                     <div class="row">
                         <div class="col-md-4 text-center mb-4 mt-4">
                             {# Photo du participant #}
-                            <i class="fas fa-user-circle fa-10x text-secondary"></i>
+                            {% if participant.photo %}
+                                <img src="{{ asset('uploads/photos/' ~ participant.photo) }}" 
+                                     alt="Photo de {{ participant.pseudo }}" 
+                                     class="img-thumbnail rounded-circle" 
+                                     style="width: 200px; height: 200px; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-10x text-secondary"></i>
+                            {% endif %}
                         </div>
 
                         <div class="col-md-8">
