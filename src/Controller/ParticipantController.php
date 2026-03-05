@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Exception\ParticipantCreateException;
+use App\Form\ParticipantType;
 use App\Form\ProfilType;
 use App\Repository\ParticipantRepository;
+use App\Service\ParticipantService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -100,6 +103,46 @@ class ParticipantController extends AbstractController
     ): Response {
         return $this->render('profil/afficher_profil.html.twig', [
             'participant' => $participant,
+        ]);
+    }
+
+    /**
+     * Ajouter un participant manuellement
+     */
+    #[Route('/add-participant', name: 'app_add_participant', methods: ["GET", "POST"])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function ajouterParticipant(Request $request, ParticipantService $participantService): Response
+    {
+        $createParticipant = new Participant();
+        $form = $this->createForm(ParticipantType::class, $createParticipant);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            try{
+                $participant = $form->getData();
+                $plainPassword = $form->get('motdepasse')->getData();
+                $participantService->createParticipants(
+                    $participant,
+                    $plainPassword
+                );
+
+                $this->addFlash('success', 'Le participant a bien été ajouté avec succès.');
+                return $this->redirectToRoute('app_list_participant');
+            }catch(ParticipantCreateException $e){
+                $this->addFlash("error", $e->getMessage());
+            }
+        }
+        return $this->render('participant/add-participant.html.twig',[
+            "participantForm" => $form->createView(),
+        ]);
+    }
+
+    #[Route('/list-participant', name:'app_list_participant', methods:["GET"])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function listParticipant(ParticipantService $participantService): Response
+    {
+        $participants = $participantService->getAllParticipants();
+        return $this->render('/participant/list-participant.html.twig', [
+            'participants' => $participants
         ]);
     }
 }
