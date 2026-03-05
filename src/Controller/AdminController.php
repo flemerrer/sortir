@@ -3,8 +3,11 @@
     namespace App\Controller;
 
     use App\Entity\UserFileUpdloadRecord;
+    use App\Exception\CsvParsingException;
     use App\Exception\CsvUploadException;
+    use App\Exception\ParticipantBatchPersistException;
     use App\Form\FileUploadType;
+    use App\Repository\ParticipantRepository;
     use App\Service\CsvFileService;
     use Doctrine\ORM\EntityManagerInterface;
     use Psr\Log\LoggerInterface;
@@ -28,8 +31,7 @@
         #[Route("/import", name: "app_admin_import")]
         public function import(
             Request        $request,
-            CsvFileService $csvFileService,
-            ParticipantService  $participantService,
+            CsvFileService $csvFileService
         ): Response
         {
             $uploadRecord = new UserFileUpdloadRecord();
@@ -40,12 +42,10 @@
                 try {
                     $newFileName = $csvFileService->upload($file);
                     $user = $this->getUser();
-                    $csvFileService->saveEvent($uploadRecord, $user, $newFileName);
-                    //todo:create method
                     $users = $csvFileService->extractUsers($newFileName);
-                    //todo: create service and methods
-                    $userService->addMultipleUsers($users);
-                } catch (CsvUploadException $e) {
+                    $csvFileService->createMultipleUsers($users);
+                    $csvFileService->saveEvent($uploadRecord, $user, $newFileName);
+                } catch (CsvUploadException|CsvParsingException|ParticipantBatchPersistException $e) {
                     $this->addFlash("error", $e->getMessage());
                 }
             }
