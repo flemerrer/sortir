@@ -53,19 +53,28 @@ class ParticipantController extends AbstractController
             // Gestion de l'upload de photo
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
-                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+                // Validation manuelle de l'extension
+                $extension = strtolower($photoFile->getClientOriginalExtension());
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (!in_array($extension, $allowedExtensions)) {
+                    $this->addFlash('danger', 'Format d\'image non autorisé. Utilisez JPG, PNG ou GIF.');
+                } elseif ($photoFile->getSize() > 2 * 1024 * 1024) {
+                    $this->addFlash('danger', 'L\'image ne doit pas dépasser 2 Mo.');
+                } else {
+                    $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
 
-                try {
-                    $photoFile->move(
-                        $this->getParameter('photos_directory'),
-                        $newFilename
-                    );
-                    // On pourrait ajouter un champ photo dans l'entité Participant
-                    // $user->setPhoto($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Une erreur est survenue lors de l\'upload de la photo');
+                    try {
+                        $photoFile->move(
+                            $this->getParameter('photos_directory'),
+                            $newFilename
+                        );
+                        $user->setPhoto($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', 'Une erreur est survenue lors de l\'upload de la photo');
+                    }
                 }
             }
 
