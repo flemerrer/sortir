@@ -28,7 +28,7 @@
         /**
          * Page d'import des utilisateurs
          */
-        #[Route("/import", name: "app_admin_import")]
+        #[Route("/admin/import", name: "app_admin_import")]
         public function import(
             Request        $request,
             CsvFileService $csvFileService

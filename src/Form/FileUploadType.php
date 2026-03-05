@@ -13,14 +13,17 @@ class FileUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('csvFile', FileType::class, [
+        $builder->add('csv', FileType::class, [
             'mapped' => false,
             'required' => true,
             'constraints' => [
                 new File(
                     maxSize: '1024k',
+                    //fixme: doesn't work, don't know why...
+                    mimeTypes: ['text/csv', 'application/csv', 'text/x-comma-separated-values', 'text/x-csv', 'text/plain'],
+                    mimeTypesMessage:  'Veuillez charger un fichier CSV valide.',
                     extensions: ['csv'],
-                    extensionsMessage: 'Veuillez téléverser un fichier CSV valide.'
+                    extensionsMessage: 'Veuillez charger un fichier CSV valide.'
                 )
             ]
         ])
