@@ -7,6 +7,7 @@ use App\Exception\ParticipantCreateException;
 use App\Form\ParticipantType;
 use App\Form\ProfilType;
 use App\Repository\ParticipantRepository;
+use App\Service\ParticipantService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -101,7 +102,7 @@ class ParticipantController extends AbstractController
      */
     #[Route('/add-participant', name: 'app_add_participant', methods: ["GET", "POST"])]
     #[IsGranted('ROLE_ADMIN')]
-    public function ajouterParticipant(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
+    public function ajouterParticipant(Request $request, ParticipantService $participantService): Response
     {
         $createParticipant = new Participant();
         $form = $this->createForm(ParticipantType::class, $createParticipant);
@@ -110,10 +111,11 @@ class ParticipantController extends AbstractController
             try{
                 $participant = $form->getData();
                 $plainPassword = $form->get('motdepasse')->getData();
-                $hashedPassword = $passwordHasher->hashPassword($participant, $plainPassword);
-                $participant->setMotdepasse($hashedPassword);
-                $em->persist($participant);
-                $em->flush();
+                $participantService->createParticipants(
+                    $participant,
+                    $plainPassword
+                );
+
                 $this->addFlash('success', 'Le participant a bien été ajouté avec succès.');
                 return $this->redirectToRoute('app_list_participant');
             }catch(ParticipantCreateException $e){
@@ -127,9 +129,9 @@ class ParticipantController extends AbstractController
 
     #[Route('/list-participant', name:'app_list_participant', methods:["GET"])]
     #[IsGranted('ROLE_ADMIN')]
-    public function listParticipant(ParticipantRepository $participantRepository): Response
+    public function listParticipant(ParticipantService $participantService): Response
     {
-        $participants = $participantRepository->findAll();
+        $participants = $participantService->getAllParticipants();
         return $this->render('/participant/list-participant.html.twig', [
             'participants' => $participants
         ]);
